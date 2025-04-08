@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,11 +33,15 @@ public class ModEvents {
     public static void onLivingHurt(LivingHurtEvent event) {
         if (event.getEntity().level().isClientSide()) return;
 
-        if (event.getSource().getDirectEntity() instanceof Player player && isCriticalHit(player)) {
-            handleCriticalHit(player);
-        }
-
         handleFireResistance(event);
+    }
+
+    //================= Wrath Pendant Critical Hit Effects =================
+    @SubscribeEvent
+    public static void onCriticalHit(CriticalHitEvent event) {
+        if (event.getResult() != Result.DENY) { //We basically check if the event has been canceled, not exactly but works similar
+            handleCriticalHit(event.getEntity());
+        }
     }
 
     // ==================== 进食加速系统 ====================
@@ -64,7 +69,6 @@ public class ModEvents {
             handleKnockbackImmunity(player, event);
         }
     }
-
 
     // ==================== 无限图腾触发逻辑（不消耗任何物品）====================
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -197,15 +201,6 @@ public class ModEvents {
     // ==================== 辅助方法 ====================
     public static int calculateSinLevel(int hunger, float saturation) {
         return (int) Math.floor((hunger / 4.0) + (saturation / 6.0) + 1);
-    }
-
-
-    private static boolean isCriticalHit(Player player) {
-        return player.getAttackStrengthScale(0.5F) > 0.9F &&
-                !player.onGround() &&
-                !player.isInWater() &&
-                !player.isPassenger() &&
-                !player.isDiscrete();
     }
 
     private static boolean isFireDamage(DamageSource source) {
