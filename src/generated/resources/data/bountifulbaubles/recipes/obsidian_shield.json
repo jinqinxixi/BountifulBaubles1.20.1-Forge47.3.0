@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "bountifulbaubles:obsidian_skull"
+  },
+  "base": {
+    "item": "bountifulbaubles:cobalt_shield"
+  },
+  "result": {
+    "item": "bountifulbaubles:obsidian_shield"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "ABA",
+    " C "
+  ],
+  "key": {
+    "A": { "item": "minecraft:bone" },
+    "B": { "item": "bountifulbaubles:amulet_sin_empty" },
+    "C": { "tag": "forge:heads" }
+  },
+  "result": {
+    "item": "bountifulbaubles:wrath_pendant",
+    "count": 1
+  }
+}

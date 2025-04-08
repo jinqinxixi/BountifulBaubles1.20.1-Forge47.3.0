@@ -1,0 +1,46 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"0": "bountifulbaubles:item/auto_torch",
+		"particle": "bountifulbaubles:item/auto_torch"
+	},
+	"elements": [
+		{
+			"from": [7, 0, 7],
+			"to": [9, 9, 9],
+			"faces": {
+				"north": {"uv": [0, 0, 2, 9], "texture": "#0"},
+				"east": {"uv": [2, 0, 4, 9], "texture": "#0"},
+				"south": {"uv": [4, 0, 6, 9], "texture": "#0"},
+				"west": {"uv": [6, 0, 8, 9], "texture": "#0"},
+				"up": {"uv": [10, 2, 8, 0], "texture": "#0"},
+				"down": {"uv": [10, 2, 8, 4], "texture": "#missing"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 5, 0]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 5, 0]
+		},
+		"firstperson_righthand": {
+			"rotation": [-12.47, -3.72, 16.32],
+			"translation": [-0.25, 7.75, 0]
+		},
+		"firstperson_lefthand": {
+			"rotation": [-13, -3.72, 16.32],
+			"translation": [-0.25, 7.75, -0.25]
+		},
+		"ground": {
+			"translation": [0, 4, 0]
+		},
+		"gui": {
+			"translation": [0, 3.75, 0]
+		},
+		"fixed": {
+			"translation": [0, 4.25, 0]
+		}
+	}
+}

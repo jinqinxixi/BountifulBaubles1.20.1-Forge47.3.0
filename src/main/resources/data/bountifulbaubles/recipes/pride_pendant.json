@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "ABA",
+    " C "
+  ],
+  "key": {
+    "A": { "item": "minecraft:gold_ingot" },
+    "B": { "item": "bountifulbaubles:amulet_sin_empty"},
+    "C": { "item": "minecraft:diamond_block" }
+  },
+  "result": {
+    "item": "bountifulbaubles:pride_pendant",
+    "count": 1
+  }
+}

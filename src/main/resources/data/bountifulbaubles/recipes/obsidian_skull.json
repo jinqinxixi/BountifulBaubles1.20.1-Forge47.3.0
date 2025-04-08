@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ABA"
+  ],
+  "key": {
+    "A": { "item": "minecraft:obsidian" },
+    "B": { "item": "minecraft:blaze_powder"},
+    "C": { "item": "minecraft:magma_cream" },
+    "D": { "tag": "forge:heads" }
+  },
+  "result": {
+    "item": "bountifulbaubles:obsidian_skull",
+    "count": 1
+  }
+}

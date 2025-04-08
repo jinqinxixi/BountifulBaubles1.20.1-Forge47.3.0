@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "bountifulbaubles:item/book_o_enchanting"
+  }
+}

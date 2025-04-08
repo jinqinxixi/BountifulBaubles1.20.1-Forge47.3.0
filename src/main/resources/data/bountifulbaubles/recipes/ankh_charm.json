@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "CDE",
+    "AFA"
+  ],
+  "key": {
+    "A": { "item": "minecraft:gold_block" },
+    "B": { "item": "bountifulbaubles:sunglasses"},
+    "C": { "item": "bountifulbaubles:ring_free_action" },
+    "D": { "item": "bountifulbaubles:mixed_dragon_scale" },
+    "E": { "item": "bountifulbaubles:apple" },
+    "F": { "item": "bountifulbaubles:vitamins" }
+  },
+  "result": {
+    "item": "bountifulbaubles:ankh_charm",
+    "count": 1
+  }
+}

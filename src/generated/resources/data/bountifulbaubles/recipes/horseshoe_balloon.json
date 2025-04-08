@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "bountifulbaubles:lucky_horseshoe"
+  },
+  "base": {
+    "item": "bountifulbaubles:balloon"
+  },
+  "result": {
+    "item": "bountifulbaubles:horseshoe_balloon"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  }
+}

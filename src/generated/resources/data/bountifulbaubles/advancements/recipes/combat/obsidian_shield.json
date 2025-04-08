@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_smithing_material": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "bountifulbaubles:obsidian_skull"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "bountifulbaubles:obsidian_shield"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_smithing_material",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "bountifulbaubles:obsidian_shield"
+    ]
+  },
+  "sends_telemetry_event": false
+}

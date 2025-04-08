@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": { "item": "minecraft:quartz"},
+    "B": { "item": "minecraft:blaze_powder"},
+    "C": { "item": "minecraft:redstone"}
+  },
+  "result": {
+    "item": "bountifulbaubles:disintegration_tablet",
+    "count": 1
+  }
+}

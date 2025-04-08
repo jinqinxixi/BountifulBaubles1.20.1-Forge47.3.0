@@ -1,0 +1,22 @@
+
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "bountifulbaubles:baubles"
+    },
+    {
+      "item": "bountifulbaubles:disintegration_tablet",
+      "data": {
+        "remainder": {
+          "id": "bountifulbaubles:disintegration_tablet",
+          "Count": 1
+        }
+      }
+    }
+  ],
+  "result": {
+    "item": "bountifulbaubles:spectral_silt",
+    "count": 1
+  }
+}

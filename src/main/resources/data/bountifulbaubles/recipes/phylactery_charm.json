@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AB ",
+    "CD ",
+    "   "
+  ],
+  "key": {
+    "A": { "item": "minecraft:wither_skeleton_skull" },
+    "B": { "item": "minecraft:diamond"},
+    "C": { "item": "bountifulbaubles:magic_mirror" },
+    "D": { "item": "bountifulbaubles:broken_heart" }
+  },
+  "result": {
+    "item": "bountifulbaubles:phylactery_charm",
+    "count": 1
+  }
+}

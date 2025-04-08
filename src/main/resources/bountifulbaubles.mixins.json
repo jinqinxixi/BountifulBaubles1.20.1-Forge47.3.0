@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.jinqinxixi.bountifulbaubles.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "bountifulbaubles.refmap.json",
+  "mixins": [
+    "ItemStackMixin","LivingEntityMixin","PlayerRendererMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

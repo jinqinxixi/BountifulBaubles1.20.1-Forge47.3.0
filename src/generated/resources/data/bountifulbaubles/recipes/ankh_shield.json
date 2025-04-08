@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "bountifulbaubles:ankh_charm"
+  },
+  "base": {
+    "item": "bountifulbaubles:obsidian_shield"
+  },
+  "result": {
+    "item": "bountifulbaubles:ankh_shield"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  }
+}

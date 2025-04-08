@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:smithing_transform",
+  "addition": {
+    "item": "bountifulbaubles:shulker_heart"
+  },
+  "base": {
+    "item": "bountifulbaubles:ring_overclocking"
+  },
+  "result": {
+    "item": "bountifulbaubles:ring_free_action"
+  },
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  }
+}

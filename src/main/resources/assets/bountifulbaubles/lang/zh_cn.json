@@ -1,0 +1,266 @@
+{
+  "creativetab.bountiful_baubles_tab": "丰富的饰品",
+  "msg.mirror.request_accepted": "%s §6接受了你的传送请求",
+  "msg.mirror.request_denied": "%s §6拒绝了你的传送请求",
+  "msg.mirror.request_expired": "%s §6的传送请求已超时",
+  "msg.mirror.invalid_request": "§6无效或过期的传送请求",
+  "msg.mirror.self_teleport": "§6不能传送给自己！",
+  "msg.mirror.player_offline": "§6玩家 %s §6不在线",
+  "msg.mirror.request_sent": "§6已向 %s §6发送传送请求",
+  "msg.mirror.request_received": "%s §6想要传送到你身边：",
+  "msg.mirror.accepted": "§6已接受 %s §6的传送请求",
+  "msg.mirror.denied": "§6已拒绝 %s §6的传送请求",
+  "message.magic_mirror.cooldown": "§6传送镜还在冷却中！",
+  "gui.player_selection.title": "传送列表",
+  "command.tp_request.accepted": "点击接受传送请求（30秒后过期）",
+  "command.tp_request.denied": "点击拒绝传送请求（30秒后过期）",
+  "gui.cancel": "取消",
+
+  "item.bountifulbaubles.potion_wormhole": "虫洞药水",
+  "item.bountifulbaubles.potion_recall": "回忆药水",
+  "item.bountifulbaubles.wormhole_mirror": "虫洞镜",
+  "item.bountifulbaubles.broken_heart": "破碎的心",
+  "item.bountifulbaubles.magic_mirror": "魔镜",
+  "item.bountifulbaubles.disintegration_tablet": "崩解牌",
+  "item.bountifulbaubles.ender_dragon_scale": "末影龙鳞",
+  "item.bountifulbaubles.amulet_sin_empty": "罪恶吊坠 (空)",
+  "item.bountifulbaubles.spectral_silt": "幽冥粉",
+  "item.bountifulbaubles.balloon": "气球",
+  "item.bountifulbaubles.obsidian_skull": "黑曜石头颅",
+  "item.bountifulbaubles.sunglasses": "太阳镜",
+  "item.bountifulbaubles.apple": "禁果",
+  "item.bountifulbaubles.vitamins": "维生素",
+  "item.bountifulbaubles.ring_overclocking": "超频戒指",
+  "item.bountifulbaubles.shulker_heart": "潜影贝之心",
+  "item.bountifulbaubles.ring_free_action": "自由行走之戒",
+  "item.bountifulbaubles.bezoar": "牛黄",
+  "item.bountifulbaubles.black_dragon_scale": "黑龙鳞",
+  "item.bountifulbaubles.mixed_dragon_scale": "混色龙鳞",
+  "item.bountifulbaubles.lucky_horseshoe": "幸运马蹄铁",
+  "effect.bountifulbaubles.sinful": "罪恶",
+  "item.bountifulbaubles.ankh_charm": "安卡护符",
+  "item.bountifulbaubles.horseshoe_balloon": "马蹄气球",
+  "item.bountifulbaubles.cross_necklace": "十字项链",
+  "item.bountifulbaubles.phylactery_charm": "勾玉护符",
+  "item.bountifulbaubles.pride_pendant": "傲慢吊坠",
+  "item.bountifulbaubles.wrath_pendant": "愤怒吊坠",
+  "item.bountifulbaubles.gluttony_pendant": "贪食吊坠",
+  "item.bountifulbaubles.resplendent_token": "闪耀币",
+  "item.bountifulbaubles.broken_black_dragon_scale": "破裂的黑龙鳞",
+  "item.bountifulbaubles.cobalt_shield": "钴盾",
+  "item.bountifulbaubles.obsidian_shield": "黑曜石护盾",
+  "item.bountifulbaubles.ankh_shield": "安卡护盾",
+  "item.bountifulbaubles.curious_ring": "奇异戒指",
+  "item.bountifulbaubles.curious_amulet": "奇异护符",
+  "item.bountifulbaubles.curious_crown": "奇异之冠",
+  "item.bountifulbaubles.curious_knuckles": "奇异手指",
+  "item.bountifulbaubles.infinite_totem_of_undying": "无限图腾",
+  "item.bountifulbaubles.auto_torch": "自动火把",
+  "item.bountifulbaubles.endless_pearl": "永恒珍珠",
+  "item.bountifulbaubles.bottled_cloud": "云朵瓶",
+  "item.bountifulbaubles.vampiric_glove": "吸血手套",
+  "item.bountifulbaubles.gauntlets_dexterity": "灵巧手套",
+  "item.bountifulbaubles.minds_eye": "洞察之眼",
+  "item.bountifulbaubles.luck_coin": "幸运硬币",
+  "item.bountifulbaubles.dragon_breath": "火龙之息",
+  "item.bountifulbaubles.ice_shard": "冰碎片",
+  "item.bountifulbaubles.tha_spider": "小蜘蛛",
+  "item.bountifulbaubles.creepo": "吉吉怪",
+  "item.bountifulbaubles.tha_wizard": "小巫师",
+  "item.bountifulbaubles.book_o_enchanting": "咒术书",
+  "item.bountifulbaubles.warm_void": "友善虚空",
+  "item.bountifulbaubles.golden_melon": "黄金瓜",
+  "item.bountifulbaubles.fire_mind": "燃焱意志",
+  "item.bountifulbaubles.drop_spindle": "永恒纺锤",
+  "item.bountifulbaubles.dark_egg": "暗影之卵",
+  "item.bountifulbaubles.mossy_ring": "覆苔指环",
+  "item.bountifulbaubles.mossy_belt": "覆苔腰带",
+  "item.bountifulbaubles.mad_aura": "炽光环",
+  "item.bountifulbaubles.turtle_shell": "海龟鳞",
+  "item.bountifulbaubles.dark_dagger": "暗影匕首",
+  "item.bountifulbaubles.ember": "余烬之石",
+  "item.bountifulbaubles.wither_nail": "凋零之爪",
+  "item.bountifulbaubles.serpent_tooth": "毒蛇之牙",
+  "item.bountifulbaubles.blaze_heart": "烈焰之心",
+  "item.bountifulbaubles.treasure_bag": "宝藏戴",
+
+
+  "tooltip.bountifulbaubles.amulet_sin_empty.component": "▸ 合成部件",
+  "tooltip.bountifulbaubles.ankh_charm.effect": "▸ 免疫大部分的负面效果",
+  "tooltip.bountifulbaubles.ankh_shield.effect": "▸ 当持有或者装备在饰品栏时\n▸ 免疫部分火焰并免疫击退\n▸ 以及免疫大多数负面效果\n▸ 可以在铁砧上用黑曜石修复",
+  "tooltip.bountifulbaubles.apple.effects": "▸ 免疫饥饿和反胃",
+  "tooltip.bountifulbaubles.auto_torch.function": "▸ 在暗处自动放置火把",
+  "tooltip.bountifulbaubles.balloon.effects": "▸ 增加跳跃高度，降低摔落伤害",
+  "tooltip.bountifulbaubles.bezoar.effect": "▸ 免疫中毒效果",
+  "tooltip.bountifulbaubles.black_dragon_scale.effect": "▸ 免疫凋零效果",
+  "tooltip.bountifulbaubles.bottled_cloud.double_jump": "▸ 允许装备者进行二段跳",
+  "tooltip.bountifulbaubles.broken_black_dragon_scale.lore": "据说黑龙鳞可以免疫凋零。也许可以修一修这个破损的龙鳞？",
+
+  "tooltip.bountifulbaubles.broken_heart.effect": "▸ 减少你最大生命值用于抵挡致命伤害\n▸ 通过睡觉来恢复损失的生命值",
+  "tooltip.bountifulbaubles.broken_heart.lore": "这是咋做到的？",
+
+  "tooltip.bountifulbaubles.cobalt_shield.effect": "▸ 当你将其拿在手上或放在饰品栏时，免疫击退\n▸ 跟普通的盾一样，也可以举起来\n▸ 可以在铁砧上用铁锭修复",
+
+  "tooltip.bountifulbaubles.cross_necklace.effect": "▸ 受到伤害时可以延长玩家的无敌时间",
+  "tooltip.bountifulbaubles.cross_necklace.lore": "神圣的庇护，让你在危机中喘息",
+
+  "tooltip.bountifulbaubles.curious_amulet.effect": "▸ 持续获得生命恢复效果",
+  "tooltip.bountifulbaubles.curious_crown.effect": "▸ 持续获得夜视效果",
+  "tooltip.bountifulbaubles.curious_knuckles.effect": "▸ 近战伤害 +4",
+
+  "tooltip.bountifulbaubles.curious_ring.effect": "▸ +10% 攻击/移动速度",
+  "tooltip.bountifulbaubles.curious_ring.effect1": "▸ +2 护甲值",
+  "tooltip.bountifulbaubles.curious_ring.effect2": "▸ 持续获得急迫效果",
+
+  "tooltip.bountifulbaubles.disintegration_tablet.effect": "▸ 将饰品与之合成可以将饰品或特定物品分解为幽冥粉",
+  "tooltip.bountifulbaubles.ender_dragon_scale.lore": "感觉轻得不像自然之物",
+
+  "tooltip.bountifulbaubles.endless_pearl.effect": "▸ 无限使用的末影珍珠",
+  "tooltip.bountifulbaubles.endless_pearl.effect1": "▸ 并且不会对玩家造成伤害",
+
+  "tooltip.bountifulbaubles.gauntlets_of_dexterity.effect": "▸ 增加攻击速度",
+  "tooltip.bountifulbaubles.gluttony_pendant.effect": "▸ 加快吃东西的速度\n▸ 并且当你吃东西的时候\n▸ 给予10秒罪恶buff（+攻击力和护甲值）",
+  "tooltip.bountifulbaubles.horseshoe_balloon.effect": "▸ 增加跳跃高度并消除摔落伤害",
+
+  "tooltip.bountifulbaubles.infinite_totem_undying.effect": "▸ 无限不死图腾",
+  "tooltip.bountifulbaubles.infinite_totem_undying.description": "你没看错,就是给不死图腾附魔了无限,就这么简单",
+
+  "tooltip.bountifulbaubles.lucky_horseshoe.effect": "▸ 免疫摔落伤害",
+  "tooltip.bountifulbaubles.lucky_horseshoe.description": "为什么马需要这个",
+
+  "tooltip.bountifulbaubles.magic_mirror.effect": "▸ 将你传送到重生点",
+  "tooltip.bountifulbaubles.magic_mirror.description": "他或许可以扭曲空间，但他无法将丑陋变为美丽",
+  "tooltip.bountifulbaubles.magic_mirror.description1": "对你而言这是个不幸的消息",
+
+  "tooltip.bountifulbaubles.mixed_dragon_scale.effect": "▸ 免疫中毒和凋零",
+  "tooltip.bountifulbaubles.obsidian_shield.effect": "▸ 将其拿在手上或放入饰品栏时\n▸ 有着黑曜石头颅和钴盾的效果\n▸ 可以在铁砧上用黑曜石修复",
+
+  "tooltip.bountifulbaubles.obsidian_skull.effect": "▸ 减少50%的火焰伤害（例如烈焰人和恶魂的火球）\n▸ 免疫烧伤，但是不能免疫岩浆的伤害",
+  "tooltip.bountifulbaubles.obsidian_skull.description": "拿着这个让你有点紧张",
+
+  "tooltip.bountifulbaubles.phylactery_charm.effect": "▸ 装备后，在受到致命伤害时将你传送到重生点\n▸ 装备后可以充当破碎的心\n▸ 按右键使用，会立即将你传送到重生点，但会对你造成伤害",
+
+  "tooltip.bountifulbaubles.pride_pendant.effect": "▸ 自动上坡",
+  "tooltip.bountifulbaubles.pride_pendant.effect1": "▸ 生命值满时罪恶buff（+攻击力和护甲值）",
+
+  "tooltip.bountifulbaubles.resplendent_token.effect": "▸ 重铸材料",
+  "tooltip.bountifulbaubles.resplendent_token.effect1": "▸ 与饰品在铁砧上合成能够重铸饰品属性",
+
+  "tooltip.bountifulbaubles.ring_free_action.effect": "▸ 免疫缓慢和飘浮",
+  "tooltip.bountifulbaubles.ring_free_action.effect1": "▸ 触碰蛛网时会将其破坏",
+
+  "tooltip.bountifulbaubles.ring_overclocking.effect": "▸ 免疫缓慢和 +7% 的移动速度",
+  "tooltip.bountifulbaubles.ring_overclocking.description": "众所周知，蓝色 LED 可以让你的电脑更快更强",
+
+  "tooltip.bountifulbaubles.shulker_heart.effect": "▸ 免疫漂浮效果",
+  "tooltip.bountifulbaubles.shulker_heart.effect1": "▸ 可以用来酿造飞行药水（未实现）",
+  "tooltip.bountifulbaubles.shulker_heart.description": "黏乎乎的……",
+
+  "tooltip.bountifulbaubles.spectral_silt.effect": "▸ 合成材料",
+
+  "tooltip.bountifulbaubles.sunglasses.effect": "▸ 免疫失明和黑暗",
+  "tooltip.bountifulbaubles.sunglasses.description": "真男人从不回头看爆炸",
+
+  "tooltip.bountifulbaubles.vampiric_glove.effect": "▸ 近战攻击吸血",
+  "tooltip.bountifulbaubles.vitamins.effect": "▸ 免疫虚弱和挖掘疲劳",
+
+  "tooltip.bountifulbaubles.wormhole_mirror.effect": "▸ 右击传送到重生的",
+  "tooltip.bountifulbaubles.wormhole_mirror.effect1": "▸ 潜行右击传送到其他玩家身边",
+  "tooltip.bountifulbaubles.wormhole_mirror.description": "你可以感觉到虚空正在凝视着你",
+
+  "tooltip.bountifulbaubles.wrath_pendant.effect": "▸ +2 攻击伤害",
+  "tooltip.bountifulbaubles.wrath_pendant.effect1": "▸ 造成暴击后获得罪恶buff（+攻击力和护甲值）",
+
+  "tooltip.bountifulbaubles.recall_potion.effect": "▸ 将你传送到重生点。",
+
+  "tooltip.bountifulbaubles.wormhole_potion.effect": "▸ 将你传送到其他玩家身边。",
+  "tooltip.bountifulbaubles.wormhole_potion.description": "你突然感到非常孤独。",
+
+
+  "modifier.bountifulbaubles.half_hearted": "半心：生命值",
+  "modifier.bountifulbaubles.hearty": "全心：生命值",
+  "modifier.bountifulbaubles.hard": "坚硬：盔甲值",
+  "modifier.bountifulbaubles.guarding": "守护：盔甲值",
+  "modifier.bountifulbaubles.armored": "装甲：盔甲值",
+  "modifier.bountifulbaubles.warding": "护佑：盔甲韧性",
+  "modifier.bountifulbaubles.jagged": "锯齿：攻击伤害",
+  "modifier.bountifulbaubles.spiked": "尖刺：攻击伤害",
+  "modifier.bountifulbaubles.angry": "愤怒：攻击伤害",
+  "modifier.bountifulbaubles.menacing": "险恶：攻击伤害",
+  "modifier.bountifulbaubles.brisk": "轻快：移动速度",
+  "modifier.bountifulbaubles.fleeting": "快速：移动速度",
+  "modifier.bountifulbaubles.hasty": "急速：移动速度",
+  "modifier.bountifulbaubles.quick": "迅捷：移动速度",
+  "modifier.bountifulbaubles.wild": "狂野：攻击速度",
+  "modifier.bountifulbaubles.rash": "鲁莽：攻击速度",
+  "modifier.bountifulbaubles.intrepid": "勇猛：攻击速度",
+  "modifier.bountifulbaubles.violent": "暴力：攻击速度",
+  "tooltip.bountifulbaubles.unidentified": "◆ 未鉴定",
+
+
+  "tooltip.bountifulbaubles.minds_eye.effects": "▸ 每 %.1f 秒会随机标记一个敌对生物一段时间",
+  "tooltip.bountifulbaubles.minds_eye.effects1": "▸ 攻击被标记的生物时，伤害增加 %.0f%%",
+  "tooltip.bountifulbaubles.minds_eye.effects2": "▸ 在标记消失前击杀生物，那么会立即再随机标记另一个生物",
+
+  "tooltip.bountifulbaubles.luckcoin.title": "▸ 幸运加成:",
+  "tooltip.bountifulbaubles.luckcoin.bonus_line": "▸ %.0f%%概率: +%.0f%%伤害",
+
+  "tooltip.bountifulbaubles.dragon_breath.effect": "▸ 自动熔炼所挖掘的方块",
+
+  "tooltip.bountifulbaubles.ice_shard.effect": "▸ 获得冰霜行者效果",
+
+  "tooltip.bountifulbaubles.tha_spider.effect": "▸ 获得爬墙的能力",
+
+  "tooltip.bountifulbaubles.creepo.effect": "▸ 苦力怕会无视你",
+
+  "tooltip.bountifulbaubles.tha_wizard.effects": "▸ 所有药水效果持续时间延长%.0f%%",
+
+  "tooltip.bountifulbaubles.book_enchanting.effects": "▸ 你不需要摆放书架也能够进行30级附魔",
+
+  "tooltip.bountifulbaubles.golden_melon.effects": "▸ 食用食物时获得基于食物恢复饥饿值的生命值",
+
+  "tooltip.bountifulbaubles.dropspindle.effects": "▸ 攻击时有%.0f%%概率修复装备的%d点耐久",
+
+  "tooltip.bountifulbaubles.warm_void.effects": "▸ 坠入虚空时将你传送回重生点",
+  "message.bountifulbaubles.warm_void.teleport": "▸ 虚空庇护者将你传送回重生点",
+
+  "tooltip.bountifulbaubles.fire_mind.effects": "▸ 注视生物时使其着火",
+
+  "tooltip.bountifulbaubles.darkegg.effects": "▸ 受伤时召唤%d只友善恼鬼保护你（冷却时间：%d秒）",
+  "tooltip.bountifulbaubles.darkegg.description": "▸ 恼鬼将存活%d秒并保护你不受伤害",
+
+  "tooltip.bountifulbaubles.mossyring.effects": "▸ 每%.1f秒修复%d点手持物品的耐久",
+  "tooltip.bountifulbaubles.mossyring.description": "▸ 优先修复主手，其次是副手",
+
+  "tooltip.bountifulbaubles.mossybelt.effects": "▸ 每%.1f秒修复身上装备%d点耐久",
+  "tooltip.bountifulbaubles.mossybelt.description": "▸ 从下到上依次修复装备",
+
+  "tooltip.bountifulbaubles.madaura.effects": "▸ 为你抵挡一次伤害（冷却：%.1f秒）",
+
+  "tooltip.bountifulbaubles.turtle_shell.effect": "▸ 获得潮涌能量和海豚的恩惠效果",
+
+  "tooltip.bountifulbaubles.dark_dagger.effect": "▸ 当目标生命值低于%d%%时触发斩杀效果",
+
+  "tooltip.bountifulbaubles.ember.effect": "▸ 获得抗火效果",
+  "tooltip.bountifulbaubles.ember.effect1": "▸ 可以再岩浆上行走",
+
+  "tooltip.bountifulbaubles.wither_nail.effect": "▸ 你的攻击附带8秒的凋零 I 效果",
+
+  "tooltip.bountifulbaubles.serpent_tooth.effect": "▸ 你的攻击附带10秒的中毒 I 效果",
+
+  "tooltip.bountifulbaubles.blaze_heart.effect1": "▸ 受到伤害时获得生命恢复效果",
+  "tooltip.bountifulbaubles.blaze_heart.effect2": "▸ 效果等级取决于受伤程度",
+  "tooltip.bountifulbaubles.treasure_bag": "▸ 右键使用以获得一个随机饰品！"
+
+
+
+
+
+
+
+
+
+
+
+}
+

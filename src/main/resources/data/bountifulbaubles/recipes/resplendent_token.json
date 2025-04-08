@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": { "item": "bountifulbaubles:spectral_silt" },
+    "B": { "item": "minecraft:gold_ingot"},
+    "C": { "item": "minecraft:diamond" }
+  },
+  "result": {
+    "item": "bountifulbaubles:resplendent_token",
+    "count": 1
+  }
+}

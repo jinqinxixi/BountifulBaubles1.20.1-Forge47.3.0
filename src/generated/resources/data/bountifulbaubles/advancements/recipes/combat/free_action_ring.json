@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_smithing_material": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "bountifulbaubles:shulker_heart"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "bountifulbaubles:free_action_ring"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_smithing_material",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "bountifulbaubles:free_action_ring"
+    ]
+  },
+  "sends_telemetry_event": false
+}
