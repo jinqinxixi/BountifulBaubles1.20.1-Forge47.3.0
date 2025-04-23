@@ -1,6 +1,5 @@
 package com.jinqinxixi.bountifulbaubles.item.Baubles;
 
-import com.jinqinxixi.bountifulbaubles.item.ModItems;
 import com.jinqinxixi.bountifulbaubles.system.modifier.ModifiableBaubleItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,6 +22,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 @Mod.EventBusSubscriber
@@ -40,13 +39,18 @@ public class AppleItem extends ModifiableBaubleItem {
         return MODIFIERS;
     }
 
-    // 关键修复：添加正确的Curios初始化
+
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag unused) {
         return CuriosApi.createCurioProvider(new ICurio() {
             @Override
             public ItemStack getStack() {
                 return stack;
+            }
+
+            @Override
+            public List<Component> getAttributesTooltip(List<Component> tooltips) {
+                return Collections.emptyList(); // 在父类中统一隐藏属性提示
             }
 
             @Override
@@ -108,6 +112,7 @@ public class AppleItem extends ModifiableBaubleItem {
         }
     }
 
+
     // ===== 防附魔核心代码 =====
     // 1. 禁止铁砧/指令附魔
     @Override
@@ -127,25 +132,4 @@ public class AppleItem extends ModifiableBaubleItem {
         tooltip.add(Component.translatable("tooltip.bountifulbaubles.apple.effects").withStyle(ChatFormatting.BLUE));
         super.appendHoverText(stack, level, tooltip, flag); // 调用基类方法显示修饰符信息
     }
-        @Mod.EventBusSubscriber
-        public static class AnvilHandler {
-            @SubscribeEvent
-            public static void onAnvilUpdate(AnvilUpdateEvent event) {
-                ItemStack left = event.getLeft();
-                ItemStack right = event.getRight();
-
-                // 验证配方条件
-                if (left.getItem() instanceof AppleItem &&
-                        right.getItem() == ModItems.RESPLENDENT_TOKEN.get()) {
-
-                    // 创建全新物品（不复制任何NBT）
-                    ItemStack newApple = new ItemStack(ModItems.APPLE.get(), 1);
-
-                    // 设置输出
-                    event.setOutput(newApple);
-                    event.setCost(3);          // 经验消耗
-                    event.setMaterialCost(1);  // 消耗1个代币
-                }
-            }
-        }
-    }
+}

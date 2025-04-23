@@ -22,6 +22,8 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 import javax.annotation.Nullable;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
+
+import java.util.Collections;
 import java.util.List;
 
 @Mod.EventBusSubscriber
@@ -47,6 +49,11 @@ public class BlackDragonScaleItem extends ModifiableBaubleItem {
             @Override
             public ItemStack getStack() {
                 return stack;
+            }
+
+            @Override
+            public List<Component> getAttributesTooltip(List<Component> tooltips) {
+                return Collections.emptyList(); // 在父类中统一隐藏属性提示
             }
 
             // ===== 关键修复：集成父类逻辑 =====

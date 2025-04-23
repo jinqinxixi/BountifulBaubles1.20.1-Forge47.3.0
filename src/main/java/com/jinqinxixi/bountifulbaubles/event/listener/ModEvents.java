@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -39,7 +40,7 @@ public class ModEvents {
     //================= Wrath Pendant Critical Hit Effects =================
     @SubscribeEvent
     public static void onCriticalHit(CriticalHitEvent event) {
-        if (event.getResult() != Result.DENY) { //We basically check if the event has been canceled, not exactly but works similar
+        if (event.getResult() != Event.Result.DENY) { //We basically check if the event has been canceled, not exactly but works similar
             handleCriticalHit(event.getEntity());
         }
     }

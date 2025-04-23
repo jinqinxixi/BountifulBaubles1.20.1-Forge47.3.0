@@ -25,14 +25,15 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
 @Mod.EventBusSubscriber
 public abstract class ModifiableBaubleItem extends Item implements ICurioItem {
-    protected static final String MODIFIER_TAG = "BaubleModifier";
-    protected static final String INITIALIZED_TAG = "IsInitialized";
+    public static final String MODIFIER_TAG = "BaubleModifier";
+    public static final String INITIALIZED_TAG = "IsInitialized";
     protected static final Random RANDOM = new Random();
     private static final Logger LOGGER = LoggerFactory.getLogger(ModifiableBaubleItem.class);
 
@@ -196,7 +197,7 @@ public abstract class ModifiableBaubleItem extends Item implements ICurioItem {
         return (attribute == Attributes.ATTACK_SPEED ||
                 attribute == Attributes.MOVEMENT_SPEED ||
                 attribute == Attributes.ATTACK_DAMAGE)
-                ? AttributeModifier.Operation.MULTIPLY_TOTAL
+                ? AttributeModifier.Operation.MULTIPLY_BASE
                 : AttributeModifier.Operation.ADDITION;
     }
 
@@ -216,6 +217,11 @@ public abstract class ModifiableBaubleItem extends Item implements ICurioItem {
             @Override
             public void onEquip(SlotContext slotContext, ItemStack prevStack) {
                 ModifiableBaubleItem.this.onEquip(slotContext, prevStack, stack);
+            }
+
+            @Override
+            public List<Component> getAttributesTooltip(List<Component> tooltips) {
+                return Collections.emptyList(); // 在父类中统一隐藏属性提示
             }
 
             @Override

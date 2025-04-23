@@ -17,6 +17,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 @Mod.EventBusSubscriber
@@ -39,6 +40,11 @@ public class GoldenMelonItem extends ModifiableBaubleItem {
             @Override
             public ItemStack getStack() {
                 return stack;
+            }
+
+            @Override
+            public List<Component> getAttributesTooltip(List<Component> tooltips) {
+                return Collections.emptyList(); // 在父类中统一隐藏属性提示
             }
 
             @Override

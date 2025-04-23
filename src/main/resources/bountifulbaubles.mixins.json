@@ -5,7 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "bountifulbaubles.refmap.json",
   "mixins": [
-    "ItemStackMixin","LivingEntityMixin","PlayerRendererMixin"
+    "ItemStackMixin","LivingEntityMixin","PlayerRendererMixin","CuriosTooltipMixin"
   ],
   "client": [
   ],

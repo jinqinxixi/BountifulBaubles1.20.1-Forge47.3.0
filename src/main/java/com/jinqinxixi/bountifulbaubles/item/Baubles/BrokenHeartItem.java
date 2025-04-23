@@ -28,6 +28,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,6 +57,10 @@ public class BrokenHeartItem extends ModifiableBaubleItem {
                 return stack;
             }
 
+            @Override
+            public List<Component> getAttributesTooltip(List<Component> tooltips) {
+                return Collections.emptyList(); // 在父类中统一隐藏属性提示
+            }
 
             @Override
             public void curioTick(SlotContext slotContext) {

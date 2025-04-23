@@ -27,6 +27,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 @Mod.EventBusSubscriber
@@ -49,24 +50,31 @@ public class ObsidianShieldItem extends ModifiableBaubleItem {
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag unused) {
         return CuriosApi.createCurioProvider(new ICurio() {
+
             @Override
             public ItemStack getStack() {
                 return stack;
             }
-    @Override
-    public void onEquip(SlotContext slotContext, ItemStack prevStack) {
-        if (slotContext.entity() instanceof Player player) {
-            applyModifier(player, stack); // 调用父类方法
-        }
-    }
 
-    @Override
-    public void onUnequip(SlotContext slotContext, ItemStack newStack) {
-        if (slotContext.entity() instanceof Player player) {
-            removeModifier(player, stack); // 调用父类方法
-        }
-    }
-            // 新增接口方法
+            @Override
+            public List<Component> getAttributesTooltip(List<Component> tooltips) {
+                return Collections.emptyList(); // 在父类中统一隐藏属性提示
+            }
+
+            @Override
+            public void onEquip(SlotContext slotContext, ItemStack prevStack) {
+                if (slotContext.entity() instanceof Player player) {
+                    applyModifier(player, stack); // 调用父类方法
+                }
+            }
+
+            @Override
+            public void onUnequip(SlotContext slotContext, ItemStack newStack) {
+                if (slotContext.entity() instanceof Player player) {
+                    removeModifier(player, stack); // 调用父类方法
+                }
+            }
+
             @Override
             public boolean canEquip(SlotContext slotContext) {
                 return true;

@@ -1,7 +1,6 @@
 package com.jinqinxixi.bountifulbaubles.system.modifier;
 
 import com.jinqinxixi.bountifulbaubles.BountifulBaublesMod;
-
 import com.jinqinxixi.bountifulbaubles.config.ModifierConfig;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -18,8 +17,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.AnvilRepairEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import top.theillusivec4.curios.api.event.CurioAttributeModifierEvent;
 import top.theillusivec4.curios.api.event.CurioChangeEvent;
 
@@ -28,7 +25,6 @@ import java.util.UUID;
 
 @Mod.EventBusSubscriber(modid = BountifulBaublesMod.MOD_ID)
 public class CurioAttributeEvents {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CurioAttributeEvents.class);
     private static final Random RANDOM = new Random();
     private static ModifierConfig config;
 
@@ -55,20 +51,13 @@ public class CurioAttributeEvents {
         CompoundTag tag = stack.getOrCreateTag();
         if (!tag.contains("ModifierType") || !tag.contains("ModifierUUID")) {
             try {
-                // 生成新的修饰符和UUID
                 Modifier randomModifier = getRandomModifier();
                 UUID modifierUUID = UUID.randomUUID();
 
-                // 保存到NBT
                 tag.putString("ModifierType", randomModifier.name());
                 tag.putString("ModifierUUID", modifierUUID.toString());
-
-                LOGGER.debug("Initialized new modifier {} with UUID {} for item {}",
-                        randomModifier.name(), modifierUUID,
-                        BuiltInRegistries.ITEM.getKey(stack.getItem()));
             } catch (Exception e) {
-                LOGGER.error("Error initializing modifier for item {}: {}",
-                        BuiltInRegistries.ITEM.getKey(stack.getItem()), e.getMessage());
+                // 忽略异常
             }
         }
     }
@@ -102,10 +91,9 @@ public class CurioAttributeEvents {
                 );
 
                 event.addModifier(attribute, attributeModifier);
-                LOGGER.debug("Applied modifier {} to item {}", modifier.name(), itemId);
             });
         } catch (Exception e) {
-            LOGGER.error("Error applying modifier for item {}: {}", itemId, e.getMessage());
+            // 忽略异常
         }
     }
 
@@ -119,13 +107,10 @@ public class CurioAttributeEvents {
         String itemId = BuiltInRegistries.ITEM.getKey(removedStack.getItem()).toString();
         if (!config.isItemModifiable(itemId)) return;
 
-        // 比较修饰符UUID
         if (hasSameModifier(removedStack, addedStack)) {
-            LOGGER.debug("Skipping modifier removal due to same UUID for item {}", itemId);
             return;
         }
 
-        // 处理修饰符的移除
         removeModifierFromStack(removedStack, event.getEntity());
     }
 
@@ -166,17 +151,13 @@ public class CurioAttributeEvents {
                 if (instance != null) {
                     instance.removeModifier(uuid);
 
-                    // 特殊处理最大生命值
                     if (attribute == Attributes.MAX_HEALTH) {
                         player.setHealth(Math.min(player.getHealth(), player.getMaxHealth()));
                     }
-
-                    LOGGER.debug("Removed modifier {} from player {}", modifier.name(), player.getName().getString());
                 }
             });
         } catch (Exception e) {
-            LOGGER.error("Error removing modifier from item {}: {}",
-                    BuiltInRegistries.ITEM.getKey(stack.getItem()), e.getMessage());
+            // 忽略异常
         }
     }
 
@@ -192,7 +173,18 @@ public class CurioAttributeEvents {
         String rightItemId = BuiltInRegistries.ITEM.getKey(right.getItem()).toString();
 
         if (rightItemId.equals(reforgeConfig.requiredItem)) {
-            ItemStack output = new ItemStack(left.getItem());
+            ItemStack output = left.copy();
+
+            CompoundTag tag = output.getTag();
+            if (tag != null) {
+                if (tag.contains("ModifierType")) {
+                    tag.remove("ModifierType");
+                }
+                if (tag.contains("ModifierUUID")) {
+                    tag.remove("ModifierUUID");
+                }
+            }
+
             event.setOutput(output);
             event.setCost(reforgeConfig.experienceCost);
             event.setMaterialCost(reforgeConfig.materialCost);
@@ -213,11 +205,8 @@ public class CurioAttributeEvents {
 
             tag.putString("ModifierType", newModifier.name());
             tag.putString("ModifierUUID", newUUID.toString());
-
-            LOGGER.debug("Created new modifier {} with UUID {} for anvil result {}",
-                    newModifier.name(), newUUID, itemId);
         } catch (Exception e) {
-            LOGGER.error("Error creating modifier for anvil result {}: {}", itemId, e.getMessage());
+            // 忽略异常
         }
     }
 

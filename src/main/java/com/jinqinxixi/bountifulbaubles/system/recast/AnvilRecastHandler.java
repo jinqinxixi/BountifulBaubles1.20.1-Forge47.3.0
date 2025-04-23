@@ -1,8 +1,10 @@
 package com.jinqinxixi.bountifulbaubles.system.recast;
 
 import com.jinqinxixi.bountifulbaubles.config.ModConfig;
+import com.jinqinxixi.bountifulbaubles.system.modifier.ModifiableBaubleItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -14,7 +16,6 @@ import java.util.Map;
 public class AnvilRecastHandler {
     private static final Map<Item, RecastRecipe> RECIPES = new HashMap<>();
 
-    // 通过方法获取当前配置值
     private static int getExpCost() {
         return ModConfig.ANVIL_RECAST_EXP_COST.get();
     }
@@ -35,7 +36,23 @@ public class AnvilRecastHandler {
         if (!left.isEmpty() && !right.isEmpty()) {
             RecastRecipe recipe = RECIPES.get(left.getItem());
             if (recipe != null && recipe.matches(right)) {
-                event.setOutput(recipe.getResult(left));
+                // 创建输出物品的副本，保留所有NBT数据
+                ItemStack output = left.copy();
+
+                // 获取并清除修饰符相关的NBT标签
+                CompoundTag tag = output.getTag();
+                if (tag != null) {
+                    // 移除修饰符标签
+                    if (tag.contains(ModifiableBaubleItem.MODIFIER_TAG)) {
+                        tag.remove(ModifiableBaubleItem.MODIFIER_TAG);
+                    }
+                    // 移除已初始化标记
+                    if (tag.contains(ModifiableBaubleItem.INITIALIZED_TAG)) {
+                        tag.remove(ModifiableBaubleItem.INITIALIZED_TAG);
+                    }
+                }
+
+                event.setOutput(output);
                 event.setCost(getExpCost());
                 event.setMaterialCost(getMaterialCost());
             }
@@ -53,10 +70,6 @@ public class AnvilRecastHandler {
 
         public boolean matches(ItemStack rightStack) {
             return rightStack.getItem() == tokenItem;
-        }
-
-        public ItemStack getResult(ItemStack input) {
-            return new ItemStack(resultItem, input.getCount());
         }
     }
 }
