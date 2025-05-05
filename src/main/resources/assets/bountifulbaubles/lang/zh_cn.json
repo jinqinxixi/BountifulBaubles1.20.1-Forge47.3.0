@@ -96,7 +96,8 @@
   "tooltip.bountifulbaubles.bottled_cloud.double_jump": "▸ 允许装备者进行二段跳",
   "tooltip.bountifulbaubles.broken_black_dragon_scale.lore": "据说黑龙鳞可以免疫凋零。也许可以修一修这个破损的龙鳞？",
 
-  "tooltip.bountifulbaubles.broken_heart.effect": "▸ 减少你最大生命值用于抵挡致命伤害\n▸ 通过睡觉来恢复损失的生命值",
+  "tooltip.bountifulbaubles.broken_heart.effect": "▸ 减少你最大生命值用于抵挡致命伤害",
+  "tooltip.bountifulbaubles.broken_heart.effect1": "▸ 通过睡觉来恢复损失的生命值",
   "tooltip.bountifulbaubles.broken_heart.lore": "这是咋做到的？",
 
   "tooltip.bountifulbaubles.cobalt_shield.effect": "▸ 当你将其拿在手上或放在饰品栏时，免疫击退\n▸ 跟普通的盾一样，也可以举起来\n▸ 可以在铁砧上用铁锭修复",

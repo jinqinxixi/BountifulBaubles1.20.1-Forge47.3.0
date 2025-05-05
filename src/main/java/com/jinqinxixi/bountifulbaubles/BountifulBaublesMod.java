@@ -34,12 +34,14 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -68,10 +70,6 @@ public class BountifulBaublesMod {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
 
     public BountifulBaublesMod() {
-
-        // 初始化Mixin
-        MixinBootstrap.init();
-
         // 注册事件总线
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -122,7 +120,7 @@ public class BountifulBaublesMod {
             // 初始化战利品配置
             ModConfig.loadLootConfig();
            //ItemConfig.init();
-            CurioAttributeEvents.init();
+           // CurioAttributeEvents.init();
             // 注册锻造台配方
             AnvilRecastRegistry.registerAllRecipes();
 
@@ -242,5 +240,25 @@ public class BountifulBaublesMod {
     private void addCreative(BuildCreativeModeTabContentsEvent event) {}
     static class ClientEvents {
         public static void onGuiOpen(ScreenEvent.Init.Post event) {}
+    }
+    @SubscribeEvent
+    public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+
+        Player player = event.player;
+        // 获取玩家当前生命值和最大生命值
+        float currentHealth = player.getHealth();
+        float maxHealth = player.getMaxHealth();
+
+        // 如果当前生命值超过最大生命值，进行调整
+        if (currentHealth > maxHealth) {
+            player.hurt(player.damageSources().generic(), 0f);
+            player.setHealth(maxHealth);
+        }
+        // 如果属性未正确应用，强制刷新
+        else if (Math.abs(currentHealth - player.getHealth()) > 0.01f) {
+            player.hurt(player.damageSources().generic(), 0f);
+            player.setHealth(currentHealth);
+        }
     }
 }

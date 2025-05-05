@@ -81,10 +81,7 @@ public class CrossNecklaceItem extends ModifiableBaubleItem {
                 return stack;
             }
 
-            @Override
-            public List<Component> getAttributesTooltip(List<Component> tooltips) {
-                return Collections.emptyList(); // 在父类中统一隐藏属性提示
-            }
+
 
             // 新增装备事件处理
             @Override

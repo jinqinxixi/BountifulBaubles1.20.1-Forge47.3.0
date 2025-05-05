@@ -50,11 +50,6 @@ public class AnkhCharmItem extends ModifiableBaubleItem {
             }
 
             @Override
-            public List<Component> getAttributesTooltip(List<Component> tooltips) {
-                return Collections.emptyList(); // 在父类中统一隐藏属性提示
-            }
-
-            @Override
             public void onEquip(SlotContext slotContext, ItemStack prevStack) {
                 LivingEntity entity = slotContext.entity();
                 if (entity instanceof Player player) {

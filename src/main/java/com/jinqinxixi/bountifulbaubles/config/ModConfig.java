@@ -3,13 +3,15 @@ package com.jinqinxixi.bountifulbaubles.config;
 import com.jinqinxixi.bountifulbaubles.BountifulBaublesMod;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.fml.ModList;
 
 import java.util.*;
 
 public class ModConfig {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
-
+    private static final String BAUBLES_REFORKED_MOD_ID = "baublesreforked";
+    private static boolean baublesReforkedLoaded;
     // 生物掉落配置组
     public static final ForgeConfigSpec.DoubleValue HUSK_APPLE_CHANCE;
     public static final ForgeConfigSpec.DoubleValue STRAY_RING_CHANCE;
@@ -115,12 +117,16 @@ public class ModConfig {
 
 
     static {
-
+        baublesReforkedLoaded = ModList.get().isLoaded(BAUBLES_REFORKED_MOD_ID);
         BUILDER.push("Modifier Settings")
                 .comment("饰品修饰系统");
         MODIFIER_ENABLED = BUILDER
-                .comment("是否启用饰品修饰器系统(true/false)")
-                .define("modifierEnabled", true);
+                .comment(
+                        "是否启用饰品修饰器系统",
+                        "注意：如果检测到安装了 Baubles Reforked 模组，此选项默认为 false",
+                        "你仍然可以手动启用此选项，但不建议同时使用两个模组的修饰符系统"
+                )
+                .define("modifierEnabled", !baublesReforkedLoaded);
         BUILDER.pop();
 
 
@@ -322,7 +328,7 @@ public class ModConfig {
 
         DARK_DAGGER_EXECUTE_DAMAGE = BUILDER
                 .comment("斩杀伤害值")
-                .defineInRange("executeDamage", 999999.0, 1000.0, 9999999.0);
+                .defineInRange("executeDamage", 999999999.0, 1000.0, 999999999.0);
 
         BUILDER.pop();
 
@@ -679,7 +685,6 @@ public class ModConfig {
         LOOT_MAPPING.put(new ResourceLocation("minecraft:chests/village/village_snowy_house"), VILLAGE_SNOWY_HOUSE_LOOT);
         LOOT_MAPPING.put(new ResourceLocation("minecraft:chests/village/village_savanna_house"), VILLAGE_SAVANNA_HOUSE_LOOT);
         LOOT_MAPPING.put(new ResourceLocation("minecraft:chests/village/village_taiga_house"), VILLAGE_TAIGA_HOUSE_LOOT);
-
 
     }
 

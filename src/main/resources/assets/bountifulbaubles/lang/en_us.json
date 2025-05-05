@@ -103,7 +103,8 @@
   "tooltip.bountifulbaubles.bottled_cloud.double_jump": "▸ Allows double jumping",
   "tooltip.bountifulbaubles.broken_black_dragon_scale.lore": "Legend says dragon scales grant wither immunity. Maybe this broken one can be repaired?",
 
-  "tooltip.bountifulbaubles.broken_heart.effect": "▸ Reduces max health to prevent fatal damage\n▸ Restore lost health by sleeping",
+  "tooltip.bountifulbaubles.broken_heart.effect": "▸ Reduces max health to prevent fatal damage",
+  "tooltip.bountifulbaubles.broken_heart.effect1": "▸ Restore lost health by sleeping",
   "tooltip.bountifulbaubles.broken_heart.lore": "How does this work?",
 
   "tooltip.bountifulbaubles.cobalt_shield.effect": "▸ Grants knockback immunity when held or equipped\n▸ Functions like a normal shield\n▸ Repairable with iron ingots in an anvil",

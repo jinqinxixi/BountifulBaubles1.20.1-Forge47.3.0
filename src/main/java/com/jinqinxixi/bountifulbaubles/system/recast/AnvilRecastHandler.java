@@ -30,6 +30,11 @@ public class AnvilRecastHandler {
 
     @SubscribeEvent
     public static void onAnvilUpdate(AnvilUpdateEvent event) {
+        // 检查修饰系统是否启用
+        if (!ModConfig.MODIFIER_ENABLED.get()) {
+            return;
+        }
+
         ItemStack left = event.getLeft();
         ItemStack right = event.getRight();
 

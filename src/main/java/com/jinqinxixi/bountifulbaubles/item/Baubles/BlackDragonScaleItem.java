@@ -51,10 +51,7 @@ public class BlackDragonScaleItem extends ModifiableBaubleItem {
                 return stack;
             }
 
-            @Override
-            public List<Component> getAttributesTooltip(List<Component> tooltips) {
-                return Collections.emptyList(); // 在父类中统一隐藏属性提示
-            }
+
 
             // ===== 关键修复：集成父类逻辑 =====
             @Override

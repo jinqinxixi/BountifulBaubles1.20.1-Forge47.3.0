@@ -57,10 +57,7 @@ public class BrokenHeartItem extends ModifiableBaubleItem {
                 return stack;
             }
 
-            @Override
-            public List<Component> getAttributesTooltip(List<Component> tooltips) {
-                return Collections.emptyList(); // 在父类中统一隐藏属性提示
-            }
+
 
             @Override
             public void curioTick(SlotContext slotContext) {
@@ -292,6 +289,8 @@ public class BrokenHeartItem extends ModifiableBaubleItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("tooltip.bountifulbaubles.broken_heart.effect")
+                .withStyle(ChatFormatting.BLUE));
+        tooltip.add(Component.translatable("tooltip.bountifulbaubles.broken_heart.effect1")
                 .withStyle(ChatFormatting.BLUE));
         tooltip.add(Component.translatable("tooltip.bountifulbaubles.broken_heart.lore")
                 .withStyle(ChatFormatting.GREEN));

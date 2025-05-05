@@ -202,15 +202,15 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
     compileOnly(fg.deobf("top.theillusivec4.curios:curios-forge:5.11.1+1.20.1:api"))
     implementation(fg.deobf("top.theillusivec4.curios:curios-forge:5.11.1+1.20.1"))
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     compileOnly(fg.deobf("mezz.jei:jei-1.20.1-forge-api:15.20.0.106"))
     runtimeOnly(fg.deobf("mezz.jei:jei-1.20.1-forge:15.20.0.106"))
 
     annotationProcessor "com.github.LlamaLad7:MixinExtras:0.2.0-beta.8"
-    implementation "com.github.LlamaLad7:MixinExtras:0.2.0-beta.8"
+    runtimeOnly "com.github.LlamaLad7:MixinExtras:0.2.0-beta.8"
 
     implementation fg.deobf("curse.maven:first-aid-276837:5531834")
 }
