@@ -82,6 +82,14 @@
   "item.bountifulbaubles.wither_nail": "Wither Nail",
   "item.bountifulbaubles.serpent_tooth": "Serpent Tooth",
   "item.bountifulbaubles.blaze_heart": "Blaze Heart",
+  "item.bountifulbaubles.starfish": "Starfish",
+  "item.bountifulbaubles.golden_skull": "Golden Skull",
+  "item.bountifulbaubles.butchers_cleaver": "Butcher's cleaver",
+  "item.bountifulbaubles.karma": "Karma",
+  "item.bountifulbaubles.oxalis": "Oxalis",
+  "item.bountifulbaubles.glory_shards": "Glory Shards",
+  "item.bountifulbaubles.ruby_heart": "Ruby Heart",
+  "item.bountifulbaubles.rock_candy": "Rock Candy",
   "item.bountifulbaubles.treasure_bag": "Treasure Bag",
 
 
@@ -252,5 +260,22 @@
   "tooltip.bountifulbaubles.ember.effect": "▸ Grants Fire Resistance",
   "tooltip.bountifulbaubles.ember.effect1": "▸ Allows walking on lava",
 
-  "tooltip.bountifulbaubles.treasure_bag": "▸ Right click to open and obtain a random bauble!"
+  "tooltip.bountifulbaubles.treasure_bag": "▸ Right click to open and obtain a random bauble!",
+  "subtitles.bountifulbaubles.dark_dagger_execute": "Slay",
+
+  "tooltip.bountifulbaubles.starfish.effect": "▸ Prevents combat between players wearing this item",
+  "tooltip.bountifulbaubles.golden_skull.effect": "▸ Chance to get a Treasure Bag from slain enemies",
+  "tooltip.bountifulbaubles.butchers_cleaver.effect": "▸ Chance to obtain mob heads when slaying creatures",
+  "tooltip.bountifulbaubles.karma.effect": "▸ Grants Hero of the Village V",
+  "tooltip.bountifulbaubles.oxalis.effect": "▸ Immunity to Bad Omen and Bad Luck",
+  "tooltip.bountifulbaubles.glory_shards.effect": "▸ Allows Mending enchantment to repair equipment using player's own experience points",
+
+  "tooltip.bountifulbaubles.ruby_heart.effect": "▸ When taking lethal damage",
+  "tooltip.bountifulbaubles.ruby_heart.threshold": "▸ If health is above %s%%, negates the damage and leaves you with 1 HP",
+  "tooltip.bountifulbaubles.ruby_heart.cooldown": "▸ Cooldown: %s seconds",
+  "message.bountifulbaubles.ruby_heart.activated": "Ruby Heart has saved you from death!",
+
+  "tooltip.bountifulbaubles.rock_candy.speed_boost": "▸ Increases movement speed by %s%%",
+  "tooltip.bountifulbaubles.rock_candy.damage_warning": "▸ Takes %sx more damage!"
+
 }

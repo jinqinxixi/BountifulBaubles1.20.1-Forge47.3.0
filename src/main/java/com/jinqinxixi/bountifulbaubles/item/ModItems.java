@@ -227,6 +227,30 @@ public static final RegistryObject<Item> BROKEN_BLACK_DRAGON_SCALE = ITEMS.regis
     public static final RegistryObject<Item> BLAZE_HEART  = ITEMS.register("blaze_heart",
             () -> new BlazeHeartItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
 
+    public static final RegistryObject<Item> STARFISH  = ITEMS.register("starfish",
+            () -> new StarfishItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
+
+    public static final RegistryObject<Item> GOLDEN_SKULL  = ITEMS.register("golden_skull",
+            () -> new GoldenSkullItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
+
+    public static final RegistryObject<Item> BUTCHERS_CLEAVER  = ITEMS.register("butchers_cleaver",
+            () -> new ButchersCleaverItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
+
+    public static final RegistryObject<Item> KARMA  = ITEMS.register("karma",
+            () -> new Karma(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
+
+    public static final RegistryObject<Item> OXALIS  = ITEMS.register("oxalis",
+            () -> new OxalisItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
+
+    public static final RegistryObject<Item> GLORY_SHARDS= ITEMS.register("glory_shards",
+            () -> new GloryShardsItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
+
+    public static final RegistryObject<Item> RUBY_HEART= ITEMS.register("ruby_heart",
+            () -> new RubyHeartItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
+
+    public static final RegistryObject<Item> ROCK_CANDY= ITEMS.register("rock_candy",
+            () -> new RockCandyItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
+
     public static final RegistryObject<Item> TREASURE_BAG  = ITEMS.register("treasure_bag",
             () -> new TreasureBagItem(new Item.Properties().stacksTo(64).rarity(Rarity.UNCOMMON).fireResistant()));
 

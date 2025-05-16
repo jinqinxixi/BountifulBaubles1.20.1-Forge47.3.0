@@ -30,38 +30,6 @@ public class TurtleShellItem extends ModifiableBaubleItem {
     public void curioTick(SlotContext slotContext, ItemStack stack) {
         if (slotContext.entity() instanceof Player player && !player.level().isClientSide) {
             // 给予潮涌能量效果
-            if (!player.hasEffect(MobEffects.CONDUIT_POWER) ||
-                    player.getEffect(MobEffects.CONDUIT_POWER).getDuration() <= 20) {
-                player.addEffect(new MobEffectInstance(
-                        MobEffects.CONDUIT_POWER,
-                        100, // 5秒，为了确保效果持续
-                        0,
-                        true,
-                        false
-                ));
-            }
-
-            // 给予海豚的恩惠效果
-            if (!player.hasEffect(MobEffects.DOLPHINS_GRACE) ||
-                    player.getEffect(MobEffects.DOLPHINS_GRACE).getDuration() <= 20) {
-                player.addEffect(new MobEffectInstance(
-                        MobEffects.DOLPHINS_GRACE,
-                        100, // 5秒，为了确保效果持续
-                        0,
-                        true,
-                        false
-                ));
-            }
-        }
-    }
-
-    @Override
-    public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
-        // 调用父类的onEquip方法，处理修饰符
-        super.onEquip(slotContext, prevStack, stack);
-
-        if (slotContext.entity() instanceof Player player && !player.level().isClientSide) {
-            // 立即应用效果
             player.addEffect(new MobEffectInstance(
                     MobEffects.CONDUIT_POWER,
                     Integer.MAX_VALUE,
@@ -69,6 +37,8 @@ public class TurtleShellItem extends ModifiableBaubleItem {
                     true,
                     false
             ));
+
+            // 给予海豚的恩惠效果
             player.addEffect(new MobEffectInstance(
                     MobEffects.DOLPHINS_GRACE,
                     Integer.MAX_VALUE,
@@ -77,6 +47,13 @@ public class TurtleShellItem extends ModifiableBaubleItem {
                     false
             ));
         }
+    }
+
+    @Override
+    public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
+        // 调用父类的onEquip方法，处理修饰符
+        super.onEquip(slotContext, prevStack, stack);
+
     }
 
     @Override

@@ -83,16 +83,9 @@ public class EmberItem extends ModifiableBaubleItem {
 
     @Override
     public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {
-        if (slotContext.entity() instanceof Player player) {
-            applyModifier(player, stack);
-            player.addEffect(new MobEffectInstance(
-                    MobEffects.FIRE_RESISTANCE,
-                    Integer.MAX_VALUE,
-                    0,
-                    false,
-                    false
-            ));
-        }
+        // 调用父类的onEquip方法，处理修饰符
+        super.onEquip(slotContext, prevStack, stack);
+
     }
 
     @Override

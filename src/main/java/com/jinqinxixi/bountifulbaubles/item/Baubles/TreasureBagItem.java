@@ -49,6 +49,14 @@ public class TreasureBagItem extends Item {
             POSSIBLE_ITEMS.add(ModItems.WITHER_NAIL);
             POSSIBLE_ITEMS.add(ModItems.SERPENT_TOOTH);
             POSSIBLE_ITEMS.add(ModItems.BLAZE_HEART);
+            POSSIBLE_ITEMS.add(ModItems.STARFISH);
+            POSSIBLE_ITEMS.add(ModItems.GOLDEN_SKULL);
+            POSSIBLE_ITEMS.add(ModItems.BUTCHERS_CLEAVER);
+            POSSIBLE_ITEMS.add(ModItems.KARMA);
+            POSSIBLE_ITEMS.add(ModItems.OXALIS);
+            POSSIBLE_ITEMS.add(ModItems.GLORY_SHARDS);
+            POSSIBLE_ITEMS.add(ModItems.RUBY_HEART);
+            POSSIBLE_ITEMS.add(ModItems.ROCK_CANDY);
         }
     }
 

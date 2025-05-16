@@ -61,8 +61,12 @@ public class ModConfig {
     public static final ForgeConfigSpec.IntValue WRATH_PENDANT_BUFF_DURATION;
     public static final ForgeConfigSpec.IntValue WRATH_PENDANT_BUFF_LEVEL;
 
-
-
+    public static final ForgeConfigSpec.DoubleValue GOLDEN_SKULL_DROP_CHANCE;
+    public static final ForgeConfigSpec.DoubleValue BUTCHERS_CLEAVER_DROP_CHANCE;
+    public static final ForgeConfigSpec.IntValue RUBY_HEART_COOLDOWN;
+    public static final ForgeConfigSpec.DoubleValue RUBY_HEART_HEALTH_THRESHOLD;
+    public static final ForgeConfigSpec.DoubleValue ROCK_CANDY_SPEED_MULTIPLIER;
+    public static final ForgeConfigSpec.DoubleValue ROCK_CANDY_DAMAGE_MULTIPLIER;
 
 
     // === 战利品配置项 ===
@@ -380,6 +384,30 @@ public class ModConfig {
         DRAGON_SCALE_MAX = BUILDER
                 .comment("鳞片最大掉落数量 (默认6)")
                 .defineInRange("dragonScaleMax", 6, 0, 64);
+
+        GOLDEN_SKULL_DROP_CHANCE = BUILDER
+                .comment("黄金头颅饰品触发宝藏袋掉落的概率 (0.0-1.0)")
+                .defineInRange("goldenSkullDropChance", 0.05D, 0.0D, 1.0D);
+
+        BUTCHERS_CLEAVER_DROP_CHANCE = BUILDER
+                .comment("屠宰镰饰品触发头颅掉落的概率 (0.0-1.0)")
+                .defineInRange("butchersCleaverDropChance", 0.10D, 0.0D, 1.0D);
+
+        RUBY_HEART_COOLDOWN = BUILDER
+                .comment("红宝石之心触发后的冷却时间（以秒为单位）")
+                .defineInRange("rubyHeartCooldown", 60, 1, 3600);
+
+        RUBY_HEART_HEALTH_THRESHOLD = BUILDER
+                .comment("红宝石之心触发所需的生命值阈值（占最大生命值的百分比，0.0-1.0）")
+                .defineInRange("rubyHeartHealthThreshold", 0.3D, 0.0D, 1.0D);
+
+        ROCK_CANDY_SPEED_MULTIPLIER = BUILDER
+                .comment("水晶糖饰品的移动速度倍率（1.0 = 基础速度翻倍）")
+                .defineInRange("rockCandySpeedMultiplier", 1.0D, 0.0D, 5.0D);
+
+        ROCK_CANDY_DAMAGE_MULTIPLIER = BUILDER
+                .comment("水晶糖饰品受到的伤害倍率（2.0 = 伤害翻倍）")
+                .defineInRange("rockCandyDamageMultiplier", 2.0D, 1.0D, 5.0D);
 
         BUILDER.pop();
 
