@@ -48,6 +48,11 @@ public class ObsidianShieldItem extends ModifiableBaubleItem {
     }
 
     @Override
+    public boolean isValidRepairItem(ItemStack toRepair, ItemStack repair) {
+        return repair.is(Items.OBSIDIAN);
+    }
+
+    @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag unused) {
         return CuriosApi.createCurioProvider(new ICurio() {
 

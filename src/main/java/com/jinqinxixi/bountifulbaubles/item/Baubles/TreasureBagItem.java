@@ -1,8 +1,10 @@
 package com.jinqinxixi.bountifulbaubles.item.Baubles;
 
-import com.jinqinxixi.bountifulbaubles.item.ModItems;
+import com.jinqinxixi.bountifulbaubles.BountifulBaublesMod;
+import com.jinqinxixi.bountifulbaubles.config.ModConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -12,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
@@ -20,44 +23,79 @@ import java.util.List;
 import java.util.Random;
 
 public class TreasureBagItem extends Item {
-    private static final List<RegistryObject<Item>> POSSIBLE_ITEMS = new ArrayList<>();
     private static final Random RANDOM = new Random();
+    private static List<WeightedItem> possibleItems = null;
+
+    // 内部类来存储物品及其权重
+    private static class WeightedItem {
+        final RegistryObject<Item> item;
+        final int weight;
+
+        WeightedItem(RegistryObject<Item> item, int weight) {
+            this.item = item;
+            this.weight = weight;
+        }
+    }
 
     public TreasureBagItem(Properties properties) {
         super(properties);
-        // 初始化可能的物品列表
-        if (POSSIBLE_ITEMS.isEmpty()) {
-            POSSIBLE_ITEMS.add(ModItems.MINDS_EYE);
-            POSSIBLE_ITEMS.add(ModItems.LUCK_COIN);
-            POSSIBLE_ITEMS.add(ModItems.DRAGON_BREATH);
-            POSSIBLE_ITEMS.add(ModItems.ICE_SHARD);
-            POSSIBLE_ITEMS.add(ModItems.THA_SPIDER);
-            POSSIBLE_ITEMS.add(ModItems.CREEPO);
-            POSSIBLE_ITEMS.add(ModItems.THA_WIZARD);
-            POSSIBLE_ITEMS.add(ModItems.BOOK_O_ENCHANTINGITEM);
-            POSSIBLE_ITEMS.add(ModItems.WARM_VOID);
-            POSSIBLE_ITEMS.add(ModItems.GOLDEN_MELON);
-            POSSIBLE_ITEMS.add(ModItems.FIRE_MIND);
-            POSSIBLE_ITEMS.add(ModItems.DROP_SPINDLE);
-            POSSIBLE_ITEMS.add(ModItems.DARK_EGG);
-            POSSIBLE_ITEMS.add(ModItems.MOSSY_RING);
-            POSSIBLE_ITEMS.add(ModItems.MOSSY_BELT);
-            POSSIBLE_ITEMS.add(ModItems.MAD_AURA);
-            POSSIBLE_ITEMS.add(ModItems.TURTLE_SHELL);
-            POSSIBLE_ITEMS.add(ModItems.DARK_DAGGER);
-            POSSIBLE_ITEMS.add(ModItems.EMBER);
-            POSSIBLE_ITEMS.add(ModItems.WITHER_NAIL);
-            POSSIBLE_ITEMS.add(ModItems.SERPENT_TOOTH);
-            POSSIBLE_ITEMS.add(ModItems.BLAZE_HEART);
-            POSSIBLE_ITEMS.add(ModItems.STARFISH);
-            POSSIBLE_ITEMS.add(ModItems.GOLDEN_SKULL);
-            POSSIBLE_ITEMS.add(ModItems.BUTCHERS_CLEAVER);
-            POSSIBLE_ITEMS.add(ModItems.KARMA);
-            POSSIBLE_ITEMS.add(ModItems.OXALIS);
-            POSSIBLE_ITEMS.add(ModItems.GLORY_SHARDS);
-            POSSIBLE_ITEMS.add(ModItems.RUBY_HEART);
-            POSSIBLE_ITEMS.add(ModItems.ROCK_CANDY);
+    }
+
+    private void initPossibleItems() {
+        if (possibleItems == null) {
+            possibleItems = new ArrayList<>();
+            try {
+                String[] configItems = ModConfig.TREASURE_BAG_ITEMS.get().split(";");
+                for (String entry : configItems) {
+                    try {
+                        String[] parts = entry.trim().split(",");
+                        if (parts.length != 2) {
+                            BountifulBaublesMod.LOGGER.error("Invalid format in treasure bag config: " + entry);
+                            continue;
+                        }
+
+                        String itemId = parts[0].trim();
+                        int weight = Integer.parseInt(parts[1].trim());
+
+                        ResourceLocation resourceLocation = new ResourceLocation(itemId);
+                        Item item = ForgeRegistries.ITEMS.getValue(resourceLocation);
+                        if (item != null) {
+                            possibleItems.add(new WeightedItem(
+                                    RegistryObject.create(resourceLocation, ForgeRegistries.ITEMS),
+                                    weight
+                            ));
+                        } else {
+                            BountifulBaublesMod.LOGGER.error("Item not found in registry: " + itemId);
+                        }
+                    } catch (NumberFormatException e) {
+                        BountifulBaublesMod.LOGGER.error("Invalid weight in treasure bag config: " + entry);
+                    } catch (Exception e) {
+                        BountifulBaublesMod.LOGGER.error("Invalid item entry in treasure bag config: " + entry);
+                    }
+                }
+            } catch (Exception e) {
+                BountifulBaublesMod.LOGGER.error("Error loading treasure bag config", e);
+            }
         }
+    }
+
+    private RegistryObject<Item> getRandomItem() {
+        if (possibleItems == null || possibleItems.isEmpty()) {
+            return null;
+        }
+
+        int totalWeight = possibleItems.stream().mapToInt(item -> item.weight).sum();
+        int randomWeight = RANDOM.nextInt(totalWeight);
+        int currentWeight = 0;
+
+        for (WeightedItem weightedItem : possibleItems) {
+            currentWeight += weightedItem.weight;
+            if (randomWeight < currentWeight) {
+                return weightedItem.item;
+            }
+        }
+
+        return possibleItems.get(possibleItems.size() - 1).item;
     }
 
     @Override
@@ -65,28 +103,35 @@ public class TreasureBagItem extends Item {
         ItemStack itemstack = player.getItemInHand(hand);
 
         if (!level.isClientSide) {
-            // 随机选择一个物品
-            RegistryObject<Item> randomItem = POSSIBLE_ITEMS.get(RANDOM.nextInt(POSSIBLE_ITEMS.size()));
-            ItemStack rewardStack = new ItemStack(randomItem.get());
+            initPossibleItems();
 
-            // 给予物品
-            if (!player.getInventory().add(rewardStack)) {
-                player.drop(rewardStack, false);
-            }
+            if (possibleItems != null && !possibleItems.isEmpty()) {
+                RegistryObject<Item> randomItem = getRandomItem();
+                if (randomItem != null) {
+                    ItemStack rewardStack = new ItemStack(randomItem.get());
 
-            // 播放音效
-            level.playSound(null,
-                    player.getX(),
-                    player.getY(),
-                    player.getZ(),
-                    SoundEvents.BUNDLE_DROP_CONTENTS,
-                    SoundSource.PLAYERS,
-                    0.5F,
-                    1.0F);
+                    // 给予物品
+                    if (!player.getInventory().add(rewardStack)) {
+                        player.drop(rewardStack, false);
+                    }
 
-            // 消耗物品
-            if (!player.getAbilities().instabuild) {
-                itemstack.shrink(1);
+                    // 播放音效
+                    level.playSound(null,
+                            player.getX(),
+                            player.getY(),
+                            player.getZ(),
+                            SoundEvents.BUNDLE_DROP_CONTENTS,
+                            SoundSource.PLAYERS,
+                            0.5F,
+                            1.0F);
+
+                    // 消耗物品
+                    if (!player.getAbilities().instabuild) {
+                        itemstack.shrink(1);
+                    }
+                }
+            } else {
+                BountifulBaublesMod.LOGGER.error("Treasure bag has no possible items configured!");
             }
         }
 

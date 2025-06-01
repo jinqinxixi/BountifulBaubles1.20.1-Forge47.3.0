@@ -237,7 +237,7 @@ public static final RegistryObject<Item> BROKEN_BLACK_DRAGON_SCALE = ITEMS.regis
             () -> new ButchersCleaverItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
 
     public static final RegistryObject<Item> KARMA  = ITEMS.register("karma",
-            () -> new Karma(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
+            () -> new KarmaItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
 
     public static final RegistryObject<Item> OXALIS  = ITEMS.register("oxalis",
             () -> new OxalisItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));

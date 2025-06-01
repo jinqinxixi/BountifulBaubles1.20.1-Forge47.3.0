@@ -3,6 +3,7 @@ package com.jinqinxixi.bountifulbaubles.item.Baubles;
 import com.jinqinxixi.bountifulbaubles.config.ModConfig;
 import com.jinqinxixi.bountifulbaubles.system.modifier.ModifiableBaubleItem;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -66,6 +67,70 @@ public class RubyHeartItem extends ModifiableBaubleItem {
                 return true;
             }
         });
+    }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) {
+        if (!stack.hasTag() || !stack.getTag().contains("LastUsed")) return false; // 未使用过，不显示耐久条
+
+        // 获取当前世界的游戏时间
+        if (!(Minecraft.getInstance().level != null)) return false;
+        long currentTime = Minecraft.getInstance().level.getGameTime();
+        long cooldownTicks = ModConfig.RUBY_HEART_COOLDOWN.get() * 20;
+        long lastUsed = stack.getTag().getLong("LastUsed");
+        long elapsedTicks = currentTime - lastUsed;
+
+        // 只在冷却过程中显示耐久条
+        return elapsedTicks < cooldownTicks;
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack) {
+        if (!stack.hasTag() || !stack.getTag().contains("LastUsed")) return 13; // 耐久条满值
+
+        // 获取当前世界的游戏时间
+        if (!(Minecraft.getInstance().level != null)) return 13;
+        long currentTime = Minecraft.getInstance().level.getGameTime();
+        long cooldownTicks = ModConfig.RUBY_HEART_COOLDOWN.get() * 20;
+        long lastUsed = stack.getTag().getLong("LastUsed");
+        long elapsedTicks = currentTime - lastUsed;
+
+        if (elapsedTicks >= cooldownTicks) {
+            return 13; // 冷却完成，显示满耐久
+        }
+
+        // 计算进度 (0-13)
+        return (int) (13 * elapsedTicks / cooldownTicks);
+    }
+
+    @Override
+    public int getBarColor(ItemStack stack) {
+        if (!stack.hasTag() || !stack.getTag().contains("LastUsed")) return 0x00FF00; // 绿色，表示就绪
+
+        // 获取当前世界的游戏时间
+        if (!(Minecraft.getInstance().level != null)) return 0x00FF00;
+        long currentTime = Minecraft.getInstance().level.getGameTime();
+        long cooldownTicks = ModConfig.RUBY_HEART_COOLDOWN.get() * 20;
+        long lastUsed = stack.getTag().getLong("LastUsed");
+        long elapsedTicks = currentTime - lastUsed;
+
+        if (elapsedTicks >= cooldownTicks) {
+            return 0x00FF00; // 绿色，表示就绪
+        }
+
+        // 从红色渐变到黄色再到绿色
+        float progress = (float) elapsedTicks / cooldownTicks;
+        if (progress < 0.5f) {
+            // 红色到黄色
+            int red = 255;
+            int green = (int) (255 * (progress * 2));
+            return (red << 16) | (green << 8);
+        } else {
+            // 黄色到绿色
+            int red = (int) (255 * (2 - progress * 2));
+            int green = 255;
+            return (red << 16) | (green << 8);
+        }
     }
 
     @SubscribeEvent

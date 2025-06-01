@@ -276,7 +276,7 @@
   "tooltip.bountifulbaubles.glory_shards.effect": "▸ 能使经验修补魔咒消耗玩家自身的经验值来修复装备",
 
 
-  "tooltip.bountifulbaubles.ruby_heart.effect": "▸ 致命伤害时",
+  "tooltip.bountifulbaubles.ruby_heart.effect": "▸ 受到致命伤害时",
   "tooltip.bountifulbaubles.ruby_heart.threshold": "▸ 若生命值高于%s%%，免疫此次伤害并保留1点生命值",
   "tooltip.bountifulbaubles.ruby_heart.cooldown": "▸ 冷却时间：%s秒",
   "message.bountifulbaubles.ruby_heart.activated": "红宝石之心保护了你免于死亡！",

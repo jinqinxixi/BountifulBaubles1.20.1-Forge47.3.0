@@ -59,7 +59,14 @@ public class AnvilRecastRegistry {
         register(ModItems.WITHER_NAIL.get());
         register(ModItems.SERPENT_TOOTH.get());
         register(ModItems.BLAZE_HEART.get());
-
+        register(ModItems.STARFISH.get());
+        register(ModItems.GOLDEN_SKULL.get());
+        register(ModItems.BUTCHERS_CLEAVER.get());
+        register(ModItems.KARMA.get());
+        register(ModItems.OXALIS.get());
+        register(ModItems.GLORY_SHARDS.get());
+        register(ModItems.RUBY_HEART.get());
+        register(ModItems.ROCK_CANDY.get());
 
 
 

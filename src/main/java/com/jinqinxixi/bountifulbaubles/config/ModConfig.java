@@ -67,7 +67,7 @@ public class ModConfig {
     public static final ForgeConfigSpec.DoubleValue RUBY_HEART_HEALTH_THRESHOLD;
     public static final ForgeConfigSpec.DoubleValue ROCK_CANDY_SPEED_MULTIPLIER;
     public static final ForgeConfigSpec.DoubleValue ROCK_CANDY_DAMAGE_MULTIPLIER;
-
+    public static final ForgeConfigSpec.ConfigValue<String> TREASURE_BAG_ITEMS;
 
     // === 战利品配置项 ===
     public static final ForgeConfigSpec.ConfigValue<String> DESERT_PYRAMID_LOOT;
@@ -123,12 +123,12 @@ public class ModConfig {
     static {
         baublesReforkedLoaded = ModList.get().isLoaded(BAUBLES_REFORKED_MOD_ID);
         BUILDER.push("Modifier Settings")
-                .comment("饰品修饰系统");
+                .comment("饰品修饰系统", "Accessory Modifier System");
         MODIFIER_ENABLED = BUILDER
                 .comment(
-                        "是否启用饰品修饰器系统",
-                        "注意：如果检测到安装了 Baubles Reforked 模组，此选项默认为 false",
-                        "你仍然可以手动启用此选项，但不建议同时使用两个模组的修饰符系统"
+                        "是否启用饰品修饰器系统", "Whether to enable the accessory modifier system",
+                        "注意：如果检测到安装了 Baubles Reforked 模组，此选项默认为 false", "Note: If Baubles Reforked mod is detected, this option defaults to false",
+                        "你仍然可以手动启用此选项，但不建议同时使用两个模组的修饰符系统", "You can still enable this option manually, but it's not recommended to use both mods' modifier systems simultaneously"
                 )
                 .define("modifierEnabled", !baublesReforkedLoaded);
         BUILDER.pop();
@@ -137,112 +137,187 @@ public class ModConfig {
         // === 配置组===
         BUILDER.push("Anvil Recast Settings");
         ANVIL_RECAST_EXP_COST = BUILDER
-                .comment("全局重铸经验消耗 (0-100)")
+                .comment(
+                        "全局重铸经验消耗 (0-100)",
+                        "Global recast experience cost (0-100)"
+                )
                 .defineInRange("recastExpCost", 3, 0, 100);
         ANVIL_RECAST_MATERIAL_COST = BUILDER
-                .comment("全局重铸材料消耗 (1-64)")
+                .comment(
+                        "全局重铸材料消耗 (1-64)",
+                        "Global recast material cost (1-64)"
+                )
                 .defineInRange("recastMaterialCost", 1, 1, 64);
         BUILDER.pop();
 
         BUILDER.push("Cloud in a Bottle Settings");
         SPRINT_JUMP_VERTICAL = BUILDER
-                .comment("疾跑跳跃垂直加成 (默认0.5)")
+                .comment(
+                        "疾跑跳跃垂直加成 (默认0.5)",
+                        "Sprint jump vertical boost multiplier (default 0.5)"
+                )
                 .defineInRange("sprintVertical", 0.5D, 0.0D, 2.0D);
         SPRINT_JUMP_HORIZONTAL = BUILDER
-                .comment("疾跑跳跃水平加成 (默认0.5)")
+                .comment(
+                        "疾跑跳跃水平加成 (默认0.5)",
+                        "Sprint jump horizontal boost multiplier (default 0.5)"
+                )
                 .defineInRange("sprintHorizontal", 0.5D, 0.0D, 2.0D);
         BUILDER.pop();
 
         BUILDER.push("Totem Settings");
         COOLDOWN_TICKS = BUILDER
-                .comment("冷却时间(单位tick, 20tick=1秒)")
+                .comment(
+                        "冷却时间(单位tick, 20tick=1秒)",
+                        "Cooldown time (in ticks, 20 ticks = 1 second)"
+                )
                 .defineInRange("cooldown", 6000, 20, 72000);
         ENABLE_CURIOS = BUILDER
-                .comment("启用Curios支持")
+                .comment(
+                        "启用Curios支持",
+                        "Enable Curios support"
+                )
                 .define("enableCurios", true);
         BUILDER.pop();
 
         BUILDER.push("Vampiric Glove Settings");
         VAMPIRIC_PERCENT = BUILDER
-                .comment("吸血百分比 (0.0-1.0)")
+                .comment(
+                        "吸血百分比 (0.0-1.0)",
+                        "Life steal percentage (0.0-1.0)"
+                )
                 .defineInRange("vampiricPercent", 0.2D, 0.0D, 1.0D);
         VAMPIRIC_MAX = BUILDER
-                .comment("单次最大吸血量")
+                .comment(
+                        "单次最大吸血量",
+                        "Maximum life steal amount per hit"
+                )
                 .defineInRange("vampiricMax", 6.0D, 0.0D, 100.0D);
         BUILDER.pop();
 
         BUILDER.push("Gauntlets Settings");
         GAUNTLETS_ATTACK_SPEED = BUILDER
-                .comment("攻击速度加成倍率 (0.6=+60%)")
+                .comment(
+                        "攻击速度加成倍率 (0.6=+60%)",
+                        "Attack speed boost multiplier (0.6 = +60%)"
+                )
                 .defineInRange("attackSpeed", 0.6D, 0.0D, 2.0D);
         BUILDER.pop();
 
         BUILDER.push("Cross Necklace Settings")
-                .comment("十字项链相关配置");
+                .comment(
+                        "十字项链相关配置",
+                        "Cross Necklace Configuration"
+                );
 
         CROSS_NECKLACE_INVULNERABILITY = BUILDER
-                .comment("无敌时间延长倍率 (0.8=延长80%，设为0禁用效果)")
+                .comment(
+                        "无敌时间延长倍率 (0.8=延长80%，设为0禁用效果)",
+                        "Invulnerability time extension multiplier (0.8 = +80%, set to 0 to disable)"
+                )
                 .defineInRange("crossNecklaceBoost", 0.8D, 0.0D, 5.0D);
 
         CROSS_NECKLACE_PLAYERS_ONLY = BUILDER
-                .comment("是否仅对玩家生效")
+                .comment(
+                        "是否仅对玩家生效",
+                        "Whether the effect only applies to players"
+                )
                 .define("crossNecklacePlayersOnly", true);
 
         BUILDER.pop();
 
         BUILDER.push("Wrath Pendant Settings")
-                .comment("愤怒吊坠相关配置");
+                .comment(
+                        "愤怒吊坠相关配置",
+                        "Wrath Pendant Configuration"
+                );
 
         WRATH_PENDANT_BUFF_LEVEL = BUILDER
-                .comment("愤怒吊坠的BUFF等级 (默认3)")
+                .comment(
+                        "愤怒吊坠的BUFF等级 (默认3)",
+                        "Wrath Pendant buff level (default 3)"
+                )
                 .defineInRange("wrathPendantBuffLevel", 3, 1, 10);
 
         WRATH_PENDANT_BUFF_DURATION = BUILDER
-                .comment("愤怒吊坠的BUFF持续时间 (单位：tick，20tick=1秒，默认100)")
+                .comment(
+                        "愤怒吊坠的BUFF持续时间 (单位：tick，20tick=1秒，默认100)",
+                        "Wrath Pendant buff duration (in ticks, 20 ticks = 1 second, default 100)"
+                )
                 .defineInRange("wrathPendantBuffDuration", 100, 20, 1200);
 
         BUILDER.pop();
 
         BUILDER.push("Tactical Goggles Settings")
-                .comment("洞察之眼相关配置");
+                .comment(
+                        "洞察之眼相关配置",
+                        "Tactical Goggles Configuration"
+                );
 
         TACTICAL_SCAN_INTERVAL = BUILDER
-                .comment("扫描间隔（单位：tick，20tick = 1秒）")
+                .comment(
+                        "扫描间隔（单位：tick，20tick = 1秒）",
+                        "Scan interval (in ticks, 20 ticks = 1 second)"
+                )
                 .defineInRange("scanInterval", 300, 1, 1200);
 
         TACTICAL_MARK_DURATION = BUILDER
-                .comment("标记持续时间（单位：tick）")
+                .comment(
+                        "标记持续时间（单位：tick）",
+                        "Mark duration (in ticks)"
+                )
                 .defineInRange("markDuration", 100, 1, 600);
 
         TACTICAL_SCAN_RADIUS = BUILDER
-                .comment("水平扫描半径")
+                .comment(
+                        "水平扫描半径",
+                        "Horizontal scan radius"
+                )
                 .defineInRange("scanRadius", 10.0D, 1.0D, 32.0D);
 
         TACTICAL_UP_RANGE = BUILDER
-                .comment("向上扫描范围")
+                .comment(
+                        "向上扫描范围",
+                        "Upward scan range"
+                )
                 .defineInRange("upRange", 5.0D, 1.0D, 16.0D);
 
         TACTICAL_DOWN_RANGE = BUILDER
-                .comment("向下扫描范围")
+                .comment(
+                        "向下扫描范围",
+                        "Downward scan range"
+                )
                 .defineInRange("downRange", 5.0D, 1.0D, 16.0D);
 
         TACTICAL_DAMAGE_MULTIPLIER = BUILDER
-                .comment("对标记目标的伤害倍率")
+                .comment(
+                        "对标记目标的伤害倍率",
+                        "Damage multiplier against marked targets"
+                )
                 .defineInRange("damageMultiplier", 1.5D, 1.0D, 5.0D);
 
         BUILDER.pop();
 
         BUILDER.push("Lucky Coin Settings")
-                .comment("幸运硬币相关配置");
+                .comment(
+                        "幸运硬币相关配置",
+                        "Lucky Coin Configuration"
+                );
 
         LUCK_COIN_DAMAGE_BONUSES = BUILDER
-                .comment("伤害加成列表（0.05表示+5%伤害）")
+                .comment(
+                        "伤害加成列表（0.05表示+5%伤害）",
+                        "Damage bonus list (0.05 means +5% damage)"
+                )
                 .defineList("damageBonus",
                         Arrays.asList(0.05, 0.10, 0.30),
                         o -> o instanceof Double && (Double) o >= 0.0 && (Double) o <= 5.0);
 
         LUCK_COIN_PROBABILITIES = BUILDER
-                .comment("每个伤害加成对应的触发概率（必须和伤害加成数组长度相同，且概率和必须等于1.0）")
+                .comment(
+                        "每个伤害加成对应的触发概率（必须和伤害加成数组长度相同，且概率和必须等于1.0）",
+                        "Trigger probability for each damage bonus (must match the length of damage bonus array and sum up to 1.0)"
+                )
                 .defineList("probability",
                         Arrays.asList(0.70, 0.20, 0.10),
                         o -> o instanceof Double && (Double) o >= 0.0 && (Double) o <= 1.0);
@@ -250,171 +325,340 @@ public class ModConfig {
         BUILDER.pop();
 
         BUILDER.push("Tha Wizard Settings")
-                .comment("小巫师饰品相关配置");
+                .comment(
+                        "小巫师饰品相关配置",
+                        "Tha Wizard Accessory Configuration"
+                );
 
         THA_WIZARD_DURATION_MULTIPLIER = BUILDER
-                .comment("药水效果持续时间倍率 (1.5 = 延长50%)")
+                .comment(
+                        "药水效果持续时间倍率 (1.5 = 延长50%)",
+                        "Potion effect duration multiplier (1.5 = +50% duration)"
+                )
                 .defineInRange("durationMultiplier", 1.5D, 1.0D, 5.0D);
 
         BUILDER.pop();
 
         BUILDER.push("Drop Spindle Settings")
-                .comment("纺锤相关配置");
+                .comment(
+                        "纺锤相关配置",
+                        "Drop Spindle Configuration"
+                );
 
         DROP_SPINDLE_REPAIR_CHANCE = BUILDER
-                .comment("每次攻击时触发修复的概率 (0.25 = 25%)")
+                .comment(
+                        "每次攻击时触发修复的概率 (0.25 = 25%)",
+                        "Chance to trigger repair on attack (0.25 = 25%)"
+                )
                 .defineInRange("repairChance", 0.25D, 0.0D, 1.0D);
 
         DROP_SPINDLE_REPAIR_AMOUNT = BUILDER
-                .comment("每次修复的耐久度")
+                .comment(
+                        "每次修复的耐久度",
+                        "Amount of durability repaired per trigger"
+                )
                 .defineInRange("repairAmount", 1, 1, 64);
 
         BUILDER.pop();
 
         BUILDER.push("Dark Egg Settings")
-                .comment("暗影之卵相关配置");
+                .comment(
+                        "暗影之卵相关配置",
+                        "Dark Egg Configuration"
+                );
 
         DARK_EGG_COOLDOWN = BUILDER
-                .comment("技能冷却时间（单位：tick，20tick = 1秒）")
+                .comment(
+                        "技能冷却时间（单位：tick，20tick = 1秒）",
+                        "Ability cooldown (in ticks, 20 ticks = 1 second)"
+                )
                 .defineInRange("cooldown", 1200, 200, 6000);
 
         DARK_EGG_VEX_COUNT = BUILDER
-                .comment("每次召唤的恼鬼数量")
+                .comment(
+                        "每次召唤的恼鬼数量",
+                        "Number of Vexes summoned per use"
+                )
                 .defineInRange("vexCount", 3, 1, 10);
 
         DARK_EGG_VEX_LIFETIME = BUILDER
-                .comment("恼鬼存活时间（单位：tick）")
+                .comment(
+                        "恼鬼存活时间（单位：tick）",
+                        "Vex lifetime duration (in ticks)"
+                )
                 .defineInRange("vexLifetime", 600, 100, 2400);
 
         BUILDER.pop();
 
         BUILDER.push("Mossy Ring Settings")
-                .comment("苔藓戒指相关配置");
+                .comment(
+                        "苔藓戒指相关配置",
+                        "Mossy Ring Configuration"
+                );
 
         MOSSY_RING_REPAIR_INTERVAL = BUILDER
-                .comment("修复间隔（单位：tick，20tick = 1秒）")
+                .comment(
+                        "修复间隔（单位：tick，20tick = 1秒）",
+                        "Repair interval (in ticks, 20 ticks = 1 second)"
+                )
                 .defineInRange("repairInterval", 60, 20, 200);
 
         MOSSY_RING_REPAIR_AMOUNT = BUILDER
-                .comment("每次修复的耐久度")
+                .comment(
+                        "每次修复的耐久度",
+                        "Amount of durability repaired per tick"
+                )
                 .defineInRange("repairAmount", 1, 1, 10);
 
         BUILDER.pop();
 
         BUILDER.push("Mossy Belt Settings")
-                .comment("苔藓腰带相关配置");
+                .comment(
+                        "苔藓腰带相关配置",
+                        "Mossy Belt Configuration"
+                );
 
         MOSSY_BELT_REPAIR_INTERVAL = BUILDER
-                .comment("修复间隔（单位：tick，20tick = 1秒）")
+                .comment(
+                        "修复间隔（单位：tick，20tick = 1秒）",
+                        "Repair interval (in ticks, 20 ticks = 1 second)"
+                )
                 .defineInRange("repairInterval", 60, 20, 200);
 
         MOSSY_BELT_REPAIR_AMOUNT = BUILDER
-                .comment("每次修复的耐久度")
+                .comment(
+                        "每次修复的耐久度",
+                        "Amount of durability repaired per tick"
+                )
                 .defineInRange("repairAmount", 1, 1, 10);
 
         BUILDER.pop();
 
         BUILDER.push("Mad Aura Settings")
-                .comment("炽光环相关配置");
+                .comment(
+                        "炽光环相关配置",
+                        "Mad Aura Configuration"
+                );
 
         MAD_AURA_COOLDOWN = BUILDER
-                .comment("技能冷却时间（单位：tick，20tick = 1秒）")
+                .comment(
+                        "技能冷却时间（单位：tick，20tick = 1秒）",
+                        "Ability cooldown (in ticks, 20 ticks = 1 second)"
+                )
                 .defineInRange("cooldown", 600, 200, 2400);
 
         BUILDER.pop();
 
         BUILDER.push("Dark Dagger Settings")
-                .comment("暗影匕首相关配置");
+                .comment(
+                        "暗影匕首相关配置",
+                        "Dark Dagger Configuration"
+                );
 
         DARK_DAGGER_EXECUTE_THRESHOLD = BUILDER
-                .comment("斩杀阈值（目标剩余生命值百分比，0.2 = 20%）")
+                .comment(
+                        "斩杀阈值（目标剩余生命值百分比，0.2 = 20%）",
+                        "Execute threshold (target's remaining health percentage, 0.2 = 20%)"
+                )
                 .defineInRange("executeThreshold", 0.20, 0.05, 0.50);
 
         DARK_DAGGER_EXECUTE_DAMAGE = BUILDER
-                .comment("斩杀伤害值")
+                .comment(
+                        "斩杀伤害值",
+                        "Execute damage amount"
+                )
                 .defineInRange("executeDamage", 999999999.0, 1000.0, 999999999.0);
 
         BUILDER.pop();
 
         BUILDER.push("Blaze Heart Settings")
-                .comment("烈焰之心相关配置");
+                .comment(
+                        "烈焰之心相关配置",
+                        "Blaze Heart Configuration"
+                );
 
         BLAZE_HEART_DURATION = BUILDER
-                .comment("生命恢复效果持续时间（单位：tick，20tick = 1秒）")
-                .defineInRange("regenerationDuration", 900, 20, 2400); // 默认45秒=900tick
+                .comment(
+                        "生命恢复效果持续时间（单位：tick，20tick = 1秒）",
+                        "Regeneration effect duration (in ticks, 20 ticks = 1 second)" // Default: 45 seconds = 900 ticks
+                )
+                .defineInRange("regenerationDuration", 900, 20, 2400);
 
         BUILDER.pop();
 
         //生物掉落概率
         BUILDER.push("Mob Drop Settings")
-                .comment("所有概率值为0.0-1.0之间的浮点数，1.0=100%");
+                .comment(
+                        "所有概率值为0.0-1.0之间的浮点数，1.0=100%",
+                        "All probability values are floating-point numbers between 0.0-1.0, where 1.0 = 100%"
+                );
 
         HUSK_APPLE_CHANCE = BUILDER
-                .comment("尸壳掉落禁果概率 (默认2.5%)")
+                .comment(
+                        "尸壳掉落禁果概率 (默认2.5%)",
+                        "Chance for Husks to drop Forbidden Apple (default 2.5%)"
+                )
                 .defineInRange("huskAppleChance", 0.025D, 0.0D, 1.0D);
 
         STRAY_RING_CHANCE = BUILDER
-                .comment("流浪者掉落超频戒指概率 (默认3%)")
+                .comment(
+                        "流浪者掉落超频戒指概率 (默认3%)",
+                        "Chance for Strays to drop Overclock Ring (default 3%)"
+                )
                 .defineInRange("strayRingChance", 0.03D, 0.0D, 1.0D);
 
         SHULKER_HEART_CHANCE = BUILDER
-                .comment("潜影贝掉落潜影之心概率 (默认10%)")
+                .comment(
+                        "潜影贝掉落潜影之心概率 (默认10%)",
+                        "Chance for Shulkers to drop Shulker Heart (default 10%)"
+                )
                 .defineInRange("shulkerHeartChance", 0.10D, 0.0D, 1.0D);
 
         CAVE_SPIDER_BEZOAR_CHANCE = BUILDER
-                .comment("洞穴蜘蛛掉落牛黄概率 (默认5%)")
+                .comment(
+                        "洞穴蜘蛛掉落牛黄概率 (默认5%)",
+                        "Chance for Cave Spiders to drop Bezoar (default 5%)"
+                )
                 .defineInRange("caveSpiderBezoarChance", 0.05D, 0.0D, 1.0D);
 
         EVOKER_TOTEM_CHANCE = BUILDER
-                .comment("唤魔者掉落无限图腾概率 (默认10%)")
+                .comment(
+                        "唤魔者掉落无限图腾概率 (默认10%)",
+                        "Chance for Evokers to drop Infinite Totem (default 10%)"
+                )
                 .defineInRange("evokerTotemChance", 0.10D, 0.0D, 1.0D);
 
         ELDER_GUARDIAN_VITAMIN_CHANCE = BUILDER
-                .comment("远古守卫掉落维生素概率 (默认100%)")
+                .comment(
+                        "远古守卫掉落维生素概率 (默认100%)",
+                        "Chance for Elder Guardians to drop Vitamin (default 100%)"
+                )
                 .defineInRange("elderGuardianVitaminChance", 1.0D, 0.0D, 1.0D);
 
         DRAGON_SCALE_CHANCE = BUILDER
-                .comment("末影龙掉落鳞片的概率 (默认100%)")
+                .comment(
+                        "末影龙掉落鳞片的概率 (默认100%)",
+                        "Chance for Ender Dragon to drop Scales (default 100%)"
+                )
                 .defineInRange("dragonScaleChance", 1.0D, 0.0D, 1.0D);
 
         DRAGON_SCALE_MIN = BUILDER
-                .comment("鳞片最小掉落数量 (默认3)")
+                .comment(
+                        "鳞片最小掉落数量 (默认3)",
+                        "Minimum number of Dragon Scales dropped (default 3)"
+                )
                 .defineInRange("dragonScaleMin", 3, 0, 64);
 
         DRAGON_SCALE_MAX = BUILDER
-                .comment("鳞片最大掉落数量 (默认6)")
+                .comment(
+                        "鳞片最大掉落数量 (默认6)",
+                        "Maximum number of Dragon Scales dropped (default 6)"
+                )
                 .defineInRange("dragonScaleMax", 6, 0, 64);
 
         GOLDEN_SKULL_DROP_CHANCE = BUILDER
-                .comment("黄金头颅饰品触发宝藏袋掉落的概率 (0.0-1.0)")
+                .comment(
+                        "黄金头颅饰品触发宝藏袋掉落的概率 (0.0-1.0)",
+                        "Chance for Golden Skull accessory to trigger treasure bag drops (0.0-1.0)"
+                )
                 .defineInRange("goldenSkullDropChance", 0.05D, 0.0D, 1.0D);
 
         BUTCHERS_CLEAVER_DROP_CHANCE = BUILDER
-                .comment("屠宰镰饰品触发头颅掉落的概率 (0.0-1.0)")
+                .comment(
+                        "屠宰镰饰品触发头颅掉落的概率 (0.0-1.0)",
+                        "Chance for Butcher's Cleaver accessory to trigger head drops (0.0-1.0)"
+                )
                 .defineInRange("butchersCleaverDropChance", 0.10D, 0.0D, 1.0D);
 
         RUBY_HEART_COOLDOWN = BUILDER
-                .comment("红宝石之心触发后的冷却时间（以秒为单位）")
+                .comment(
+                        "红宝石之心触发后的冷却时间（以秒为单位）",
+                        "Ruby Heart cooldown after activation (in seconds)"
+                )
                 .defineInRange("rubyHeartCooldown", 60, 1, 3600);
 
         RUBY_HEART_HEALTH_THRESHOLD = BUILDER
-                .comment("红宝石之心触发所需的生命值阈值（占最大生命值的百分比，0.0-1.0）")
+                .comment(
+                        "红宝石之心触发所需的生命值阈值（占最大生命值的百分比，0.0-1.0）",
+                        "Ruby Heart activation health threshold (percentage of max health, 0.0-1.0)"
+                )
                 .defineInRange("rubyHeartHealthThreshold", 0.3D, 0.0D, 1.0D);
 
         ROCK_CANDY_SPEED_MULTIPLIER = BUILDER
-                .comment("水晶糖饰品的移动速度倍率（1.0 = 基础速度翻倍）")
+                .comment(
+                        "水晶糖饰品的移动速度倍率（1.0 = 基础速度翻倍）",
+                        "Rock Candy accessory movement speed multiplier (1.0 = double base speed)"
+                )
                 .defineInRange("rockCandySpeedMultiplier", 1.0D, 0.0D, 5.0D);
 
         ROCK_CANDY_DAMAGE_MULTIPLIER = BUILDER
-                .comment("水晶糖饰品受到的伤害倍率（2.0 = 伤害翻倍）")
+                .comment(
+                        "水晶糖饰品受到的伤害倍率（2.0 = 伤害翻倍）",
+                        "Rock Candy accessory damage taken multiplier (2.0 = double damage)"
+                )
                 .defineInRange("rockCandyDamageMultiplier", 2.0D, 1.0D, 5.0D);
+
+        BUILDER.pop();
+
+        BUILDER.push("Treasure Bag Settings")
+                .comment(
+                        "宝藏袋相关配置",
+                        "Treasure Bag Configuration"
+                );
+
+        TREASURE_BAG_ITEMS = BUILDER
+                .comment(
+                        "宝藏袋可能掉落的物品列表",
+                        "List of possible items from treasure bags",
+                        "",
+                        "格式：modid:物品ID,权重",
+                        "Format: modid:item_id,weight",
+                        "",
+                        "示例：minecraft:diamond,10",
+                        "Example: minecraft:diamond,10",
+                        "",
+                        "如果权重相同，物品掉落概率相等",
+                        "Items will have equal chances if weights are the same")
+                .define("possible_items",
+                        "bountifulbaubles:minds_eye,10;" +
+                                "bountifulbaubles:luck_coin,10;" +
+                                "bountifulbaubles:dragon_breath,10;" +
+                                "bountifulbaubles:ice_shard,10;" +
+                                "bountifulbaubles:tha_spider,10;" +
+                                "bountifulbaubles:creepo,10;" +
+                                "bountifulbaubles:tha_wizard,10;" +
+                                "bountifulbaubles:book_o_enchanting,10;" +
+                                "bountifulbaubles:warm_void,10;" +
+                                "bountifulbaubles:golden_melon,10;" +
+                                "bountifulbaubles:fire_mind,10;" +
+                                "bountifulbaubles:drop_spindle,10;" +
+                                "bountifulbaubles:dark_egg,10;" +
+                                "bountifulbaubles:mossy_ring,10;" +
+                                "bountifulbaubles:mossy_belt,10;" +
+                                "bountifulbaubles:mad_aura,10;" +
+                                "bountifulbaubles:turtle_shell,10;" +
+                                "bountifulbaubles:dark_dagger,10;" +
+                                "bountifulbaubles:ember,10;" +
+                                "bountifulbaubles:wither_nail,10;" +
+                                "bountifulbaubles:serpent_tooth,10;" +
+                                "bountifulbaubles:blaze_heart,10;" +
+                                "bountifulbaubles:starfish,10;" +
+                                "bountifulbaubles:golden_skull,10;" +
+                                "bountifulbaubles:butchers_cleaver,10;" +
+                                "bountifulbaubles:karma,10;" +
+                                "bountifulbaubles:oxalis,10;" +
+                                "bountifulbaubles:glory_shards,10;" +
+                                "bountifulbaubles:ruby_heart,10;" +
+                                "bountifulbaubles:rock_candy,10");
 
         BUILDER.pop();
 
         // === 战利品配置组 ===
         BUILDER.push("Loot Settings")
-                .comment("配置格式：物品ID,权重,最小数量,最大数量;多个物品用分号分隔");
-
+                .comment(
+                        "配置格式：物品ID,权重,最小数量,最大数量;多个物品用分号分隔",
+                        "Format: itemID,weight,minCount,maxCount;multiple items separated by semicolons"
+                );
         // ================= 主世界遗迹 =================
         DESERT_PYRAMID_LOOT = defineLoot("desertPyramid",
                 "minecraft:chests/desert_pyramid",

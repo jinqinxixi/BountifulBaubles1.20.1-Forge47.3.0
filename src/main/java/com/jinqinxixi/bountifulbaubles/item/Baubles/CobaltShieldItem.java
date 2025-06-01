@@ -36,6 +36,8 @@ public class CobaltShieldItem extends ModifiableBaubleItem implements Equipable{
         DispenserBlock.registerBehavior(this, ArmorItem.DISPENSE_ITEM_BEHAVIOR); // 必须添加
     }
 
+
+
     @Override
     public Modifier[] getModifiers() {
         return MODIFIERS;
