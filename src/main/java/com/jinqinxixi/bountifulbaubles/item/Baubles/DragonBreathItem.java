@@ -132,6 +132,29 @@ public class DragonBreathItem extends ModifiableBaubleItem {
                 // 在方块位置生成物品实体
                 Block.popResource(serverLevel, pos, smeltedItem);
 
+                // 手动处理工具耐久度
+                if (!tool.isEmpty() && tool.isDamageableItem()) {
+                    // 计算基础耐久消耗
+                    int damage = 1;
+
+                    // 如果工具有耐久附魔，考虑其影响
+                    int unbreakingLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, tool);
+                    if (unbreakingLevel > 0) {
+                        float chance = 1.0f / (unbreakingLevel + 1);
+                        if (player.getRandom().nextFloat() < chance) {
+                            // 对工具造成耐久损失
+                            tool.hurtAndBreak(damage, player, (p) -> {
+                                p.broadcastBreakEvent(player.getUsedItemHand());
+                            });
+                        }
+                    } else {
+                        // 没有耐久附魔，直接造成耐久损失
+                        tool.hurtAndBreak(damage, player, (p) -> {
+                            p.broadcastBreakEvent(player.getUsedItemHand());
+                        });
+                    }
+                }
+
                 // 防止原始掉落
                 event.setCanceled(true);
                 // 确保方块被破坏
