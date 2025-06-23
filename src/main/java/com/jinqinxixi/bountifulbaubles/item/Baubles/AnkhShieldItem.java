@@ -1,6 +1,7 @@
 package com.jinqinxixi.bountifulbaubles.item.Baubles;
 
 import com.jinqinxixi.bountifulbaubles.system.modifier.ModifiableBaubleItem;
+import com.jinqinxixi.bountifulbaubles.util.BaubleUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -19,10 +20,7 @@ import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -293,6 +291,16 @@ public class AnkhShieldItem extends ModifiableBaubleItem implements Equipable {
         ItemStack itemstack = player.getItemInHand(hand);
         player.startUsingItem(hand);
         return InteractionResultHolder.consume(itemstack);
+    }
+
+    @SubscribeEvent
+    public static void onLivingUpdate(LivingEvent.LivingTickEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            // 检查是否装备了安卡护盾（主手、副手或饰品栏）
+            if (hasShield(player)) {
+                BaubleUtils.destroyNearbyWebs(player);
+            }
+        }
     }
 
     @Override

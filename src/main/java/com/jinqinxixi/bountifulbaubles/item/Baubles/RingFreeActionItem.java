@@ -1,6 +1,7 @@
 package com.jinqinxixi.bountifulbaubles.item.Baubles;
 
 import com.jinqinxixi.bountifulbaubles.system.modifier.ModifiableBaubleItem;
+import com.jinqinxixi.bountifulbaubles.util.BaubleUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -117,21 +118,8 @@ public class RingFreeActionItem extends ModifiableBaubleItem {
                 if (curios.findFirstCurio(stack ->
                         stack.getItem() instanceof RingFreeActionItem).isPresent()) {
 
-                    // 检测玩家周围的蜘蛛网并破坏
-                    BlockPos pos = player.blockPosition();
-                    Level level = player.level();
-
-                    // 检测玩家周围的方块
-                    for (int x = -1; x <= 1; x++) {
-                        for (int y = -1; y <= 1; y++) {
-                            for (int z = -1; z <= 1; z++) {
-                                BlockPos blockPos = pos.offset(x, y, z);
-                                if (level.getBlockState(blockPos).is(Blocks.COBWEB)) {
-                                    level.destroyBlock(blockPos, true); // 破坏蜘蛛网并掉落物品
-                                }
-                            }
-                        }
-                    }
+                    // 使用工具类方法破坏蛛网
+                    BaubleUtils.destroyNearbyWebs(player);
 
                     // 持续清除效果
                     clearBlockedEffects(player);

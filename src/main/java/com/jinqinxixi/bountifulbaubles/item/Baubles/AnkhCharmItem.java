@@ -1,6 +1,7 @@
 package com.jinqinxixi.bountifulbaubles.item.Baubles;
 
 import com.jinqinxixi.bountifulbaubles.system.modifier.ModifiableBaubleItem;
+import com.jinqinxixi.bountifulbaubles.util.BaubleUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -12,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -131,7 +133,17 @@ public class AnkhCharmItem extends ModifiableBaubleItem {
             }
         }
     }
-
+    @SubscribeEvent
+    public static void onLivingUpdate(LivingEvent.LivingTickEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            CuriosApi.getCuriosInventory(player).ifPresent(curios -> {
+                if (curios.findFirstCurio(stack ->
+                        stack.getItem() instanceof AnkhCharmItem).isPresent()) {
+                    BaubleUtils.destroyNearbyWebs(player);
+                }
+            });
+        }
+    }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
