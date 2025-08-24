@@ -67,35 +67,10 @@ public class AnkhShieldItem extends ModifiableBaubleItem implements Equipable {
                 if (entity instanceof Player player) {
                     // 先执行父类属性修正
                     applyModifier(player, stack);
-                    if (player.hasEffect(MobEffects.DARKNESS)) {
-                        player.removeEffect(MobEffects.DARKNESS);
-                    }
-                    if (player.hasEffect(MobEffects.WITHER)) {
-                        player.removeEffect(MobEffects.WITHER);
-                    }
-                    if (player.hasEffect(MobEffects.CONFUSION)) {
-                        player.removeEffect(MobEffects.CONFUSION);
-                    }
-                    if (player.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
-                        player.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
-                    }
-                    if (player.hasEffect(MobEffects.HUNGER)) {
-                        player.removeEffect(MobEffects.HUNGER);
-                    }
-                    if (player.hasEffect(MobEffects.LEVITATION)) {
-                        player.removeEffect(MobEffects.LEVITATION);
-                    }
-                    if (player.hasEffect(MobEffects.BLINDNESS)) {
-                        player.removeEffect(MobEffects.BLINDNESS);
-                    }
-                    if (player.hasEffect(MobEffects.DIG_SLOWDOWN)) {
-                        player.removeEffect(MobEffects.DIG_SLOWDOWN);
-                    }
-                    if (player.hasEffect(MobEffects.WEAKNESS)) {
-                        player.removeEffect(MobEffects.WEAKNESS);
-                    }
-                    if (player.hasEffect(MobEffects.POISON)) {
-                        player.removeEffect(MobEffects.POISON);
+                    for (MobEffect effect : ModConfig.ankh_debuffs) {
+                    	if (player.hasEffect(effect)) {
+                    		player.removeEffect(effect);
+                    	}
                     }
                 }
             }
@@ -126,16 +101,7 @@ public class AnkhShieldItem extends ModifiableBaubleItem implements Equipable {
     public static void onEffectApplicable(MobEffectEvent.Applicable event) {
         if (event.getEntity() instanceof Player player) {
             MobEffectInstance effect = event.getEffectInstance();
-            if (effect != null && (effect.getEffect() == MobEffects.DARKNESS ||
-                    effect.getEffect() == MobEffects.WITHER ||
-                    effect.getEffect() == MobEffects.CONFUSION ||
-                    effect.getEffect() == MobEffects.MOVEMENT_SLOWDOWN ||
-                    effect.getEffect() == MobEffects.HUNGER ||
-                    effect.getEffect() == MobEffects.LEVITATION ||
-                    effect.getEffect() == MobEffects.BLINDNESS ||
-                    effect.getEffect() == MobEffects.DIG_SLOWDOWN ||
-                    effect.getEffect() == MobEffects.WEAKNESS ||
-                    effect.getEffect() == MobEffects.POISON)) {
+            if (effect != null && (ModConfig.ankh_debuffs.contains(effect.getEffect()))) {
                 if (hasShield(player)) {
                     event.setResult(Event.Result.DENY);
                 }
@@ -144,40 +110,15 @@ public class AnkhShieldItem extends ModifiableBaubleItem implements Equipable {
     }
 
     @SubscribeEvent
-    public static void onItemEquipped(net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent event) {
+    public static void onItemEquipped(LivingEquipmentChangeEvent event) {
         if (event.getEntity() instanceof Player player) {
             ItemStack stack = event.getTo();
             if (stack.getItem() instanceof AnkhShieldItem &&
                     (event.getSlot() == EquipmentSlot.MAINHAND || event.getSlot() == EquipmentSlot.OFFHAND)) {
-                if (player.hasEffect(MobEffects.DARKNESS)) {
-                    player.removeEffect(MobEffects.DARKNESS);
-                }
-                if (player.hasEffect(MobEffects.WITHER)) {
-                    player.removeEffect(MobEffects.WITHER);
-                }
-                if (player.hasEffect(MobEffects.CONFUSION)) {
-                    player.removeEffect(MobEffects.CONFUSION);
-                }
-                if (player.hasEffect(MobEffects.MOVEMENT_SLOWDOWN)) {
-                    player.removeEffect(MobEffects.MOVEMENT_SLOWDOWN);
-                }
-                if (player.hasEffect(MobEffects.HUNGER)) {
-                    player.removeEffect(MobEffects.HUNGER);
-                }
-                if (player.hasEffect(MobEffects.LEVITATION)) {
-                    player.removeEffect(MobEffects.LEVITATION);
-                }
-                if (player.hasEffect(MobEffects.BLINDNESS)) {
-                    player.removeEffect(MobEffects.BLINDNESS);
-                }
-                if (player.hasEffect(MobEffects.DIG_SLOWDOWN)) {
-                    player.removeEffect(MobEffects.DIG_SLOWDOWN);
-                }
-                if (player.hasEffect(MobEffects.WEAKNESS)) {
-                    player.removeEffect(MobEffects.WEAKNESS);
-                }
-                if (player.hasEffect(MobEffects.POISON)) {
-                    player.removeEffect(MobEffects.POISON);
+            	for (MobEffect effect : ModConfig.ankh_debuffs) {
+                	if (player.hasEffect(effect)) {
+                		player.removeEffect(effect);
+                	}
                 }
             }
         }
@@ -218,6 +159,7 @@ public class AnkhShieldItem extends ModifiableBaubleItem implements Equipable {
             if (hasShield(player)) {
                 // 处理自动修复
                 handleAutoRepair(player);
+                BaubleUtils.destroyNearbyWebs(player);
             }
         }
     }
@@ -291,16 +233,6 @@ public class AnkhShieldItem extends ModifiableBaubleItem implements Equipable {
         ItemStack itemstack = player.getItemInHand(hand);
         player.startUsingItem(hand);
         return InteractionResultHolder.consume(itemstack);
-    }
-
-    @SubscribeEvent
-    public static void onLivingUpdate(LivingEvent.LivingTickEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            // 检查是否装备了安卡护盾（主手、副手或饰品栏）
-            if (hasShield(player)) {
-                BaubleUtils.destroyNearbyWebs(player);
-            }
-        }
     }
 
     @Override
