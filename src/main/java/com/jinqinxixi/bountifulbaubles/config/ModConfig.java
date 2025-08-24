@@ -2,11 +2,17 @@ package com.jinqinxixi.bountifulbaubles.config;
 
 import com.jinqinxixi.bountifulbaubles.BountifulBaublesMod;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 
+@Mod.EventBusSubscriber(modid = BountifulBaublesMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModConfig {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
@@ -22,6 +28,9 @@ public class ModConfig {
     public static final ForgeConfigSpec.DoubleValue DRAGON_SCALE_CHANCE;
     public static final ForgeConfigSpec.IntValue DRAGON_SCALE_MIN;
     public static final ForgeConfigSpec.IntValue DRAGON_SCALE_MAX;
+    //Ankh Debuff Protection
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> ANKH_DEBUFFS;
+    public static List<MobEffect> ankh_debuffs = new ArrayList<>();
 
 
     // === 原有配置项 ===
@@ -390,6 +399,25 @@ public class ModConfig {
 
         BUILDER.pop();
 
+		BUILDER.push("Ankh Settings").comment("List of debuffs that Ankh Charm and Shield protect you from", "Ankh Configuration");
+
+		ANKH_DEBUFFS = BUILDER.comment("List of mob effects that are denied by the ankh charm and shield")
+		        .defineList("Ank protection",
+		                Arrays.asList(
+		                        "minecraft:darkness",
+		                        "minecraft:mining_fatigue",
+		                        "minecraft:nausea",
+		                        "minecraft:poison",
+		                        "minecraft:slowness",
+		                        "minecraft:weakness",
+		                        "minecraft:wither",
+		                        "minecraft:hunger",
+		                        "minecraft:blindness"
+		                ),
+		                entry -> entry instanceof String);
+
+		BUILDER.pop();
+        
         BUILDER.push("Mossy Ring Settings")
                 .comment(
                         "苔藓戒指相关配置",
@@ -1179,4 +1207,15 @@ public class ModConfig {
     public static int getWrathPendantBuffDuration() {
         return WRATH_PENDANT_BUFF_DURATION.get();
     }
+    
+    @SubscribeEvent
+    static void onLoad(final ModConfigEvent event) {
+        for (String string: ANKH_DEBUFFS.get()) {
+        	MobEffect effect = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(string));
+        	if (effect != null) {
+        		ankh_debuffs.add(effect);
+        	}
+        }
+    }
 }
+
