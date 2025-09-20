@@ -42,9 +42,9 @@ public class DarkDaggerItem extends ModifiableBaubleItem {
             return;
         }
 
-        // 检查目标是否是活着的实体
+        // 检查目标是否是活着的实体，且不是玩家
         LivingEntity target = event.getEntity();
-        if (target == null || target instanceof Player) { // 不对玩家生效
+        if (target == null || target instanceof Player) {
             return;
         }
 
@@ -57,75 +57,63 @@ public class DarkDaggerItem extends ModifiableBaubleItem {
                 // 使用配置的阈值和伤害值
                 if (healthPercentage <= ModConfig.getDarkDaggerExecuteThreshold()) {
                     event.setAmount((float)ModConfig.getDarkDaggerExecuteDamage());
-                    playExecuteEffects(player, target);
+                    // 使用优化后的特效
+                    playOptimizedExecuteEffects(player, target);
                 }
             });
         });
     }
 
-    private static void playExecuteEffects(Player player, LivingEntity target) {
+    private static void playOptimizedExecuteEffects(Player player, LivingEntity target) {
         Level level = player.level();
+        if (!(level instanceof ServerLevel serverLevel)) return;
 
-        // 创建粒子效果
-        if (level instanceof ServerLevel serverLevel) {
-            // 创建环形粒子效果
-            double radius = 1.0;
-            int particleCount = 36;
-            for (int i = 0; i < particleCount; i++) {
-                double angle = 2.0 * Math.PI * i / particleCount;
-                double x = target.getX() + radius * Math.cos(angle);
-                double z = target.getZ() + radius * Math.sin(angle);
+        // 减少粒子数量，优化生成方式
+        // 1. 环形粒子，减少数量并只使用一种粒子
+        int particleCount = 12; // 从36减少到12
+        double radius = 1.0;
+        for (int i = 0; i < particleCount; i++) {
+            double angle = 2.0 * Math.PI * i / particleCount;
+            double x = target.getX() + radius * Math.cos(angle);
+            double z = target.getZ() + radius * Math.sin(angle);
 
-                // 发送灵魂粒子
-                serverLevel.sendParticles(
-                        net.minecraft.core.particles.ParticleTypes.SOUL,
-                        x,
-                        target.getY() + 1.0,
-                        z,
-                        1,
-                        0, 0.1D, 0,
-                        0.1D
-                );
-
-                // 发送暗色烟雾粒子
-                serverLevel.sendParticles(
-                        net.minecraft.core.particles.ParticleTypes.SMOKE,
-                        x,
-                        target.getY() + 0.5,
-                        z,
-                        1,
-                        0, 0.05D, 0,
-                        0.1D
-                );
-            }
-
-            // 向上升的灵魂粒子
-            for (int i = 0; i < 15; i++) {
-                double x = target.getX() + (player.getRandom().nextDouble() - 0.5D) * 1.0D;
-                double z = target.getZ() + (player.getRandom().nextDouble() - 0.5D) * 1.0D;
-
-                serverLevel.sendParticles(
-                        net.minecraft.core.particles.ParticleTypes.SOUL,
-                        x,
-                        target.getY() + player.getRandom().nextDouble() * 2.0D,
-                        z,
-                        1,
-                        0, 0.2D, 0,
-                        0.05D
-                );
-            }
+            // 只使用灵魂粒子
+            serverLevel.sendParticles(
+                    net.minecraft.core.particles.ParticleTypes.SOUL,
+                    x,
+                    target.getY() + 1.0,
+                    z,
+                    1, // 每个位置只生成1个粒子
+                    0, 0.1D, 0,
+                    0.05D
+            );
         }
 
-        // 播放音效
+        // 2. 向上升的粒子，减少数量并使用批量发送
+        int riseParticleCount = 5; // 从15减少到5
+        double x = target.getX();
+        double y = target.getY();
+        double z = target.getZ();
+
+        serverLevel.sendParticles(
+                net.minecraft.core.particles.ParticleTypes.SOUL,
+                x, y + 1.0, z,
+                riseParticleCount, // 一次性发送多个粒子
+                0.5D, 1.0D, 0.5D, // 在更大的范围内分散
+                0.1D
+        );
+
+        // 3. 音效保持不变
         level.playSound(null,
                 target.getX(),
                 target.getY(),
                 target.getZ(),
-                ModSounds.DARK_DAGGER_EXECUTE.get(), // 使用注册的自定义音效
+                ModSounds.DARK_DAGGER_EXECUTE.get(),
                 SoundSource.PLAYERS,
                 1.0F,
                 1.0F);
     }
+
 
     @Override
     public void onEquip(SlotContext slotContext, ItemStack prevStack, ItemStack stack) {

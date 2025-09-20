@@ -189,13 +189,18 @@ public class PhylacteryCharmItem extends ModifiableBaubleItem {
         float totalLoss = data.getFloat(DATA_KEY);
 
         if (totalLoss > 0) {
-            float recovery = Math.min(totalLoss, 4.0F);
-            totalLoss -= recovery;
-            data.putFloat(DATA_KEY, totalLoss);
-
+            // 获取玩家当前的基础最大生命值（包含其他饰品的加成）
             AttributeInstance maxHealthAttr = player.getAttribute(Attributes.MAX_HEALTH);
             if (maxHealthAttr != null) {
+                // 先移除护符的减益效果，以获得真实的最大生命值
                 maxHealthAttr.removeModifier(PHYLACTERY_UUID);
+                double baseMaxHealth = maxHealthAttr.getValue();
+
+                float recovery = Math.min(totalLoss, 4.0F);
+                totalLoss -= recovery;
+                data.putFloat(DATA_KEY, totalLoss);
+
+                // 如果还有剩余减益，重新应用
                 if (totalLoss > 0) {
                     maxHealthAttr.addPermanentModifier(new AttributeModifier(
                             PHYLACTERY_UUID,
@@ -205,8 +210,13 @@ public class PhylacteryCharmItem extends ModifiableBaubleItem {
                     ));
                 }
 
-                player.setHealth(Math.min(player.getHealth(), (float) maxHealthAttr.getValue()));
-                triggerAttributeSync(player);
+                // 确保生命值不超过当前的最大值
+                float newMaxHealth = (float) maxHealthAttr.getValue();
+                float currentHealth = player.getHealth();
+                // 如果当前生命值低于恢复后的最大值，则增加生命值
+                if (currentHealth < newMaxHealth) {
+                    player.setHealth(Math.min(currentHealth + recovery, newMaxHealth));
+                }
 
                 if (player instanceof ServerPlayer serverPlayer) {
                     serverPlayer.sendSystemMessage(
@@ -214,7 +224,21 @@ public class PhylacteryCharmItem extends ModifiableBaubleItem {
                                     .withStyle(ChatFormatting.GREEN),
                             false
                     );
+
+                    // 添加当前最大生命值的提示
+                    serverPlayer.sendSystemMessage(
+                            Component.literal("Current max health: " + String.format("%.1f", newMaxHealth))
+                                    .withStyle(ChatFormatting.GRAY),
+                            false
+                    );
+
+                    // 播放恢复音效
+                    player.level().playSound(null, player.blockPosition(),
+                            SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.5F, 1.2F);
                 }
+
+                // 确保客户端同步
+                triggerAttributeSync(player);
             }
         }
     }
@@ -250,6 +274,7 @@ public class PhylacteryCharmItem extends ModifiableBaubleItem {
             public void onEquip(SlotContext slotContext, ItemStack prevStack) {
                 if (slotContext.entity() instanceof Player player) {
                     applyModifier(player, stack);  // 父类属性
+                    triggerAttributeSync(player);  // 确保装备时同步
                 }
             }
 

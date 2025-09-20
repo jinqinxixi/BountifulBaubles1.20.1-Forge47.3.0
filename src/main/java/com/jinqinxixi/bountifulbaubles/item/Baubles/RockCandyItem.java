@@ -25,7 +25,6 @@ import java.util.UUID;
 
 @Mod.EventBusSubscriber
 public class RockCandyItem extends ModifiableBaubleItem {
-    // 速度修改器的UUID，确保唯一性
     private static final UUID SPEED_MODIFIER_UUID = UUID.fromString("9e8f0f0f-0f0f-0f0f-0f0f-0f0f0f0f0f0f");
 
     public RockCandyItem(Properties properties) {
@@ -37,6 +36,12 @@ public class RockCandyItem extends ModifiableBaubleItem {
     @Override
     public Modifier[] getModifiers() {
         return MODIFIERS;
+    }
+
+    // 添加一个辅助方法来检查玩家是否已经有速度效果
+    private boolean hasSpeedModifier(Player player) {
+        return player.getAttribute(Attributes.MOVEMENT_SPEED)
+                .getModifier(SPEED_MODIFIER_UUID) != null;
     }
 
     @Override
@@ -51,12 +56,14 @@ public class RockCandyItem extends ModifiableBaubleItem {
             public void onEquip(SlotContext slotContext, ItemStack prevStack) {
                 if (slotContext.entity() instanceof Player player) {
                     applyModifier(player, stack);
-                    // 添加速度修改器
-                    player.getAttribute(Attributes.MOVEMENT_SPEED).addTransientModifier(
-                            new AttributeModifier(SPEED_MODIFIER_UUID,
-                                    "Rock Candy Speed Boost",
-                                    ModConfig.ROCK_CANDY_SPEED_MULTIPLIER.get(),
-                                    AttributeModifier.Operation.MULTIPLY_TOTAL));
+                    // 只有当没有速度效果时才添加
+                    if (!hasSpeedModifier(player)) {
+                        player.getAttribute(Attributes.MOVEMENT_SPEED).addTransientModifier(
+                                new AttributeModifier(SPEED_MODIFIER_UUID,
+                                        "Rock Candy Speed Boost",
+                                        ModConfig.ROCK_CANDY_SPEED_MULTIPLIER.get(),
+                                        AttributeModifier.Operation.MULTIPLY_TOTAL));
+                    }
                 }
             }
 
@@ -64,9 +71,19 @@ public class RockCandyItem extends ModifiableBaubleItem {
             public void onUnequip(SlotContext slotContext, ItemStack newStack) {
                 if (slotContext.entity() instanceof Player player) {
                     removeModifier(player, stack);
-                    // 移除速度修改器
-                    player.getAttribute(Attributes.MOVEMENT_SPEED)
-                            .removeModifier(SPEED_MODIFIER_UUID);
+
+                    // 检查是否还有其他装备的Rock Candy
+                    boolean hasOtherRockCandy = CuriosApi.getCuriosInventory(player)
+                            .resolve()
+                            .map(handler -> handler.findCurios(item ->
+                                    item.getItem() instanceof RockCandyItem).size() > 0) // 改为 > 0
+                            .orElse(false);
+
+                    // 只有当没有其他Rock Candy时才移除速度效果
+                    if (!hasOtherRockCandy) {
+                        player.getAttribute(Attributes.MOVEMENT_SPEED)
+                                .removeModifier(SPEED_MODIFIER_UUID);
+                    }
                 }
             }
 
@@ -87,13 +104,14 @@ public class RockCandyItem extends ModifiableBaubleItem {
         if (!(event.getEntity() instanceof Player player)) return;
         if (player.level().isClientSide()) return;
 
-        // 检查是否装备了Rock Candy饰品
+        // 只检查是否至少装备了一个Rock Candy，不管数量多少
         boolean hasRockCandy = CuriosApi.getCuriosInventory(player)
                 .resolve()
-                .flatMap(handler -> handler.findFirstCurio(item -> item.getItem() instanceof RockCandyItem))
+                .flatMap(handler -> handler.findFirstCurio(item ->
+                        item.getItem() instanceof RockCandyItem))
                 .isPresent();
 
-        // 如果装备了Rock Candy，伤害翻倍
+        // 如果装备了Rock Candy，伤害翻倍（只计算一次）
         if (hasRockCandy) {
             event.setAmount(event.getAmount() * ModConfig.ROCK_CANDY_DAMAGE_MULTIPLIER.get().floatValue());
         }
@@ -110,6 +128,10 @@ public class RockCandyItem extends ModifiableBaubleItem {
         tooltip.add(Component.translatable("tooltip.bountifulbaubles.rock_candy.damage_warning",
                         String.format("%.1f", ModConfig.ROCK_CANDY_DAMAGE_MULTIPLIER.get()))
                 .withStyle(ChatFormatting.RED));
+
+        // 添加一个提示，说明效果不会叠加
+        tooltip.add(Component.translatable("tooltip.bountifulbaubles.rock_candy.no_stack")
+                .withStyle(ChatFormatting.GRAY));
 
         super.appendHoverText(stack, level, tooltip, flag);
     }

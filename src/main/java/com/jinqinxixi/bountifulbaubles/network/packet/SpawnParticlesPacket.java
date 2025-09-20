@@ -17,12 +17,12 @@ public class SpawnParticlesPacket {
         this.playerId = playerId;
     }
 
-    public static void encode(SpawnParticlesPacket msg, FriendlyByteBuf buffer) {
-        buffer.writeVarInt(msg.playerId);
+    public SpawnParticlesPacket(FriendlyByteBuf buf) {
+        this.playerId = buf.readVarInt();
     }
 
-    public static SpawnParticlesPacket decode(FriendlyByteBuf buffer) {
-        return new SpawnParticlesPacket(buffer.readVarInt());
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeVarInt(playerId);
     }
 
     public static void handle(SpawnParticlesPacket msg, Supplier<NetworkEvent.Context> ctx) {

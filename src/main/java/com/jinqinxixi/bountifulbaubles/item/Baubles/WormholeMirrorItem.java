@@ -35,8 +35,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class WormholeMirrorItem extends Item {
-    private static final int COOLDOWN_TICKS = 2;
-    private static final int USE_DURATION = 20;
+    private static final int COOLDOWN_TICKS = 10;  //冷却时间
+    private static final int USE_DURATION = 20;  //物品长按使用时间
 
     public WormholeMirrorItem(Properties properties) {
         super(properties);

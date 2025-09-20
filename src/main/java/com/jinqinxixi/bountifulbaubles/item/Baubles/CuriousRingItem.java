@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -15,15 +16,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
+@Mod.EventBusSubscriber
 public class CuriousRingItem extends ModifiableBaubleItem {
 
     // NBT存储键
@@ -32,6 +37,7 @@ public class CuriousRingItem extends ModifiableBaubleItem {
     private static final String ARMOR_UUID_KEY = "RingArmorUUID";
 
     private static final ModifiableBaubleItem.Modifier[] MODIFIERS = ModifiableBaubleItem.Modifier.values();
+
     @Override
     public ModifiableBaubleItem.Modifier[] getModifiers() {
         return MODIFIERS;
@@ -42,20 +48,59 @@ public class CuriousRingItem extends ModifiableBaubleItem {
     }
 
     @Override
-    public int getEnchantmentValue() {
-        return 0; // 附魔等级为0
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag unused) {
+        return CuriosApi.createCurioProvider(new ICurio() {
+            @Override
+            public ItemStack getStack() {
+                return stack;
+            }
+
+            @Override
+            public void onEquip(SlotContext slotContext, ItemStack prevStack) {
+                LivingEntity entity = slotContext.entity();
+                if (entity instanceof Player player) {
+                    applyModifier(player, stack);
+                }
+            }
+
+            @Override
+            public void onUnequip(SlotContext slotContext, ItemStack newStack) {
+                LivingEntity entity = slotContext.entity();
+                if (entity instanceof Player player) {
+                    removeModifier(player, stack);
+                    player.removeEffect(MobEffects.DIG_SPEED);
+                }
+            }
+
+            @Override
+            public void curioTick(SlotContext slotContext) {
+                LivingEntity entity = slotContext.entity();
+                if (entity instanceof Player player) {
+                    player.addEffect(new MobEffectInstance(
+                            MobEffects.DIG_SPEED,
+                            Integer.MAX_VALUE,
+                            0,
+                            true, true, false
+                    ) {
+                        @Override
+                        public boolean isCurativeItem(ItemStack stack) {
+                            return false;
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public boolean canEquip(SlotContext slotContext) {
+                return true;
+            }
+        });
     }
 
-    // 禁止任何形式的附魔（包括铁砧）
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return false;
-    }
-    // ====== UUID初始化 ======
+    // UUID初始化
     private void initializeUUIDs(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTag();
 
-        // 三重UUID生成确保每个属性独立
         if (!tag.hasUUID(SPEED_UUID_KEY)) {
             tag.putUUID(SPEED_UUID_KEY, UUID.randomUUID());
         }
@@ -67,33 +112,20 @@ public class CuriousRingItem extends ModifiableBaubleItem {
         }
     }
 
-    // ========== 事件处理器 ==========
     @Mod.EventBusSubscriber(modid = "bountifulbaubles", bus = Mod.EventBusSubscriber.Bus.FORGE)
     public static class RingEffectHandler {
-        // 急迫效果的配置参数
-        private static final int HASTE_INTERVAL = 20 * 2; // 检测间隔（40刻=2秒）
-        private static final int HASTE_DURATION = 20 * 3; // 持续时间（60刻=3秒）
-        private static final MobEffect HASTE_EFFECT = MobEffects.DIG_SPEED;
-
         @SubscribeEvent
         public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
             if (event.phase == TickEvent.Phase.START) return;
             Player player = event.player;
 
             if (!player.level().isClientSide()) {
-                // 每0.5秒更新属性
                 if (player.tickCount % 10 == 0) {
                     updateRingAttributes(player);
-                }
-
-                // 每2秒处理急迫效果
-                if (player.tickCount % 40 == 0) {
-                    handleHasteEffect(player);
                 }
             }
         }
 
-        // ========== 新增方法定义 ==========
         private static void updateRingAttributes(Player player) {
             int ringCount = CuriosApi.getCuriosInventory(player)
                     .map(inv -> inv.findCurios(stack ->
@@ -132,7 +164,6 @@ public class CuriousRingItem extends ModifiableBaubleItem {
             AttributeInstance attrib = player.getAttribute(attribute);
             UUID modifierId = UUID.nameUUIDFromBytes((modifierName + player.getUUID()).getBytes());
 
-            // 移除旧修饰符
             attrib.removeModifier(modifierId);
 
             if (amount > 0) {
@@ -142,54 +173,18 @@ public class CuriousRingItem extends ModifiableBaubleItem {
                 attrib.addPermanentModifier(modifier);
             }
         }
-
-
-        private static void handleHasteEffect(Player player) {
-            boolean hasRing = CuriosApi.getCuriosInventory(player)
-                    .map(inv -> inv.findFirstCurio(stack ->
-                            stack.getItem() instanceof CuriousRingItem).isPresent())
-                    .orElse(false);
-
-            MobEffectInstance currentEffect = player.getEffect(HASTE_EFFECT);
-
-            if (hasRing) {
-                if (shouldRefreshEffect(currentEffect)) {
-                    applyHaste(player);
-                }
-            } else if (isFromRing(currentEffect)) {
-                player.removeEffect(HASTE_EFFECT);
-            }
-        }
-
-        private static boolean shouldRefreshEffect(@Nullable MobEffectInstance effect) {
-            return effect == null ||
-                    effect.getDuration() <= HASTE_INTERVAL;
-        }
-
-        private static void applyHaste(Player player) {
-            player.addEffect(new MobEffectInstance(
-                    HASTE_EFFECT,
-                    HASTE_DURATION,
-                    0,
-                    false,  // 非环境效果
-                    true    // 显示粒子
-            ) {
-                @Override
-                public CompoundTag save(CompoundTag nbt) {
-                    nbt.putString("Source", "bountiful_ring");
-                    return super.save(nbt);
-                }
-            });
-        }
-
-        private static boolean isFromRing(@Nullable MobEffectInstance effect) {
-            if (effect == null) return false;
-            CompoundTag tag = effect.save(new CompoundTag());
-            return tag.contains("Source") &&
-                    tag.getString("Source").equals("bountiful_ring");
-        }
     }
-    // ====== 物品描述 ======
+
+    @Override
+    public int getEnchantmentValue() {
+        return 0;
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return false;
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level,
                                 List<Component> tooltip, TooltipFlag flag) {
@@ -199,6 +194,6 @@ public class CuriousRingItem extends ModifiableBaubleItem {
                 .withStyle(ChatFormatting.BLUE));
         tooltip.add(Component.translatable("tooltip.bountifulbaubles.curious_ring.effect2")
                 .withStyle(ChatFormatting.BLUE));
-        super.appendHoverText(stack, level, tooltip, flag); // 调用基类方法显示修饰符信息
+        super.appendHoverText(stack, level, tooltip, flag);
     }
 }

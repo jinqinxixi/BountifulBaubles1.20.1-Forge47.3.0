@@ -6,24 +6,23 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.common.Mod;
 import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.event.CurioUnequipEvent;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
+@Mod.EventBusSubscriber
 public class CuriousCrownItem extends ModifiableBaubleItem {
-
     private static final Modifier[] MODIFIERS = Modifier.values();
-    private static final String TAG_WEARING = "bountifulbaubles:wearing_crown";
-    private static final int CHECK_INTERVAL = 20;
     private static final int EFFECT_DURATION = Integer.MAX_VALUE;
 
     public CuriousCrownItem(Properties properties) {
@@ -35,75 +34,75 @@ public class CuriousCrownItem extends ModifiableBaubleItem {
         return MODIFIERS;
     }
 
-    @Mod.EventBusSubscriber(modid = "bountifulbaubles", bus = Mod.EventBusSubscriber.Bus.FORGE)
-    public static class EventHandler {
-        @SubscribeEvent
-        public static void onCurioUnequip(CurioUnequipEvent event) {
-                ItemStack stack = event.getStack();
-            if (stack.getItem() instanceof CuriousCrownItem) {
-                Player player = (Player) event.getEntity();
-                player.removeEffect(MobEffects.NIGHT_VISION);
-                player.getPersistentData().remove(TAG_WEARING);
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag unused) {
+        return CuriosApi.createCurioProvider(new ICurio() {
+            @Override
+            public ItemStack getStack() {
+                return stack;
             }
-        }
 
-        @SubscribeEvent
-        public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-            if (event.phase != TickEvent.Phase.END || event.player.level().isClientSide()) return;
-
-            Player player = event.player;
-            if (player.tickCount % CHECK_INTERVAL != 0) return;
-
-            boolean hasCrown = CuriosApi.getCuriosInventory(player)
-                    .map(inv -> inv.findFirstCurio(stack ->
-                            stack.getItem() instanceof CuriousCrownItem).isPresent())
-                    .orElse(false);
-
-            updateNightVision(player, hasCrown);
-        }
-
-        private static void updateNightVision(Player player, boolean hasCrown) {
-            CompoundTag data = player.getPersistentData();
-            boolean wasWearing = data.getBoolean(TAG_WEARING);
-
-            if (hasCrown) {
-                if (!wasWearing || needsEffectRefresh(player)) {
+            @Override
+            public void onEquip(SlotContext slotContext, ItemStack prevStack) {
+                LivingEntity entity = slotContext.entity();
+                if (entity instanceof Player player) {
+                    // 父类逻辑：应用属性修正
+                    applyModifier(player, stack);
+                    // 子类逻辑：应用夜视效果
                     applyNightVision(player);
-                    data.putBoolean(TAG_WEARING, true);
                 }
-            } else if (wasWearing) {
-                data.remove(TAG_WEARING);
             }
-        }
 
-        private static boolean needsEffectRefresh(Player player) {
-            MobEffectInstance effect = player.getEffect(MobEffects.NIGHT_VISION);
-            return effect == null || effect.getDuration() <= CHECK_INTERVAL * 2;
-        }
-
-        private static void applyNightVision(Player player) {
-            player.addEffect(new MobEffectInstance(
-                    MobEffects.NIGHT_VISION,
-                    EFFECT_DURATION,
-                    0,
-                    true, true, false
-            ) {
-                @Override
-                public boolean isCurativeItem(ItemStack stack) {
-                    return false;
+            @Override
+            public void onUnequip(SlotContext slotContext, ItemStack newStack) {
+                LivingEntity entity = slotContext.entity();
+                if (entity instanceof Player player) {
+                    // 父类逻辑：移除属性修正
+                    removeModifier(player, stack);
+                    // 子类逻辑：移除夜视效果
+                    player.removeEffect(MobEffects.NIGHT_VISION);
                 }
-            });
-        }
+            }
+
+            @Override
+            public boolean canEquip(SlotContext slotContext) {
+                return true;
+            }
+
+            // 每tick检查效果
+            @Override
+            public void curioTick(SlotContext slotContext) {
+                LivingEntity entity = slotContext.entity();
+                if (entity instanceof Player player) {
+                    applyNightVision(player);
+                }
+            }
+        });
+    }
+
+    private static void applyNightVision(Player player) {
+        player.addEffect(new MobEffectInstance(
+                MobEffects.NIGHT_VISION,
+                EFFECT_DURATION,
+                0,
+                true, true, false
+        ) {
+            @Override
+            public boolean isCurativeItem(ItemStack stack) {
+                return false;
+            }
+        });
+    }
+
+    // ===== 防附魔核心代码 =====
+    @Override
+    public boolean isEnchantable(ItemStack stack) {
+        return false;
     }
 
     @Override
     public int getEnchantmentValue() {
         return 0;
-    }
-
-    @Override
-    public boolean isEnchantable(ItemStack stack) {
-        return false;
     }
 
     @Override

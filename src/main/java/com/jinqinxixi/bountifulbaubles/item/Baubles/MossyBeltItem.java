@@ -11,13 +11,9 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
-import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 
 public class MossyBeltItem extends ModifiableBaubleItem {
@@ -42,60 +38,23 @@ public class MossyBeltItem extends ModifiableBaubleItem {
         return MODIFIERS;
     }
 
-
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag unused) {
-        return CuriosApi.createCurioProvider(new ICurio() {
-            @Override
-            public ItemStack getStack() {
-                return stack;
-            }
+    public void curioTick(SlotContext slotContext, ItemStack stack) {
+        if (slotContext.entity() instanceof Player player && !player.level().isClientSide) {
+            CompoundTag tag = stack.getOrCreateTag();
+            int timer = tag.getInt(REPAIR_TIMER_KEY);
 
-
-
-            @Override
-            public void onEquip(SlotContext slotContext, ItemStack prevStack) {
-                if (slotContext.entity() instanceof Player player) {
-                    applyModifier(player, stack);
+            if (timer >= ModConfig.getMossyBeltRepairInterval()) {
+                // 尝试修复装备
+                if (repairArmor(player)) {
+                    // 如果成功修复了某件装备，重置计时器
+                    tag.putInt(REPAIR_TIMER_KEY, 0);
                 }
+            } else {
+                // 增加计时器
+                tag.putInt(REPAIR_TIMER_KEY, timer + 1);
             }
-
-            @Override
-            public void onUnequip(SlotContext slotContext, ItemStack newStack) {
-                if (slotContext.entity() instanceof Player player) {
-                    removeModifier(player, stack);
-                }
-            }
-
-            @Override
-            public void curioTick(SlotContext slotContext) {
-                if (slotContext.entity() instanceof Player player && !player.level().isClientSide) {
-                    CompoundTag tag = stack.getOrCreateTag();
-                    int timer = tag.getInt(REPAIR_TIMER_KEY);
-
-                    if (timer >= ModConfig.getMossyBeltRepairInterval()) {
-                        // 尝试修复装备
-                        if (repairArmor(player)) {
-                            // 如果成功修复了某件装备，重置计时器
-                            tag.putInt(REPAIR_TIMER_KEY, 0);
-                        }
-                    } else {
-                        // 增加计时器
-                        tag.putInt(REPAIR_TIMER_KEY, timer + 1);
-                    }
-                }
-            }
-
-            @Override
-            public boolean canEquip(SlotContext slotContext) {
-                return true;
-            }
-
-            @Override
-            public boolean canUnequip(SlotContext slotContext) {
-                return true;
-            }
-        });
+        }
     }
 
     private boolean repairArmor(Player player) {
@@ -143,6 +102,7 @@ public class MossyBeltItem extends ModifiableBaubleItem {
                 .withStyle(ChatFormatting.BLUE));
         super.appendHoverText(stack, level, tooltip, flag);
     }
+
     // 1. 禁止铁砧/指令附魔
     @Override
     public boolean isEnchantable(ItemStack stack) {

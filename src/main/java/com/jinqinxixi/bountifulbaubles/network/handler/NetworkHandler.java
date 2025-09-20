@@ -66,6 +66,14 @@ public class NetworkHandler {
                 MarkTargetPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
+
+        CHANNEL.registerMessage(packetId++,
+                SpawnParticlesPacket.class,
+                SpawnParticlesPacket::encode, // 使用实例方法
+                SpawnParticlesPacket::new,    // 使用构造函数
+                SpawnParticlesPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
     }
 
     // ===== 无限图腾冷却包 =====
