@@ -40,7 +40,7 @@ public class ModEvents {
     //================= Wrath Pendant Critical Hit Effects =================
     @SubscribeEvent
     public static void onCriticalHit(CriticalHitEvent event) {
-        if (event.getResult() == Event.Result.ALLOW || (event.getResult() == Event.Result.DEFAULT && event.isVanillaCritical() && event.getDamageModifier() >= 1.5f)) { //We basically check if the event has been canceled, not exactly but works similar
+        if (event.getResult() == Event.Result.ALLOW || (event.getResult() == Event.Result.DEFAULT && event.isVanillaCritical() && event.getDamageModifier() != 1.0f)) { //We basically check if the event has been canceled, not exactly but works similar
             handleCriticalHit(event.getEntity());
         }
     }
