@@ -1,5 +1,6 @@
 package com.jinqinxixi.bountifulbaubles.item.Baubles;
 
+import com.jinqinxixi.bountifulbaubles.config.ModConfig;
 import com.jinqinxixi.bountifulbaubles.system.modifier.ModifiableBaubleItem;
 import com.jinqinxixi.bountifulbaubles.util.BaubleUtils;
 import net.minecraft.ChatFormatting;
@@ -9,6 +10,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
