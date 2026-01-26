@@ -226,7 +226,7 @@ public class AnkhShieldItem extends ModifiableBaubleItem implements Equipable {
 
     @Override
     public boolean isEnchantable(ItemStack stack) {
-        return false;
+        return true; 
     }
 
     // 盾牌功能相关方法
