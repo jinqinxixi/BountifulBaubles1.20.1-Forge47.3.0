@@ -412,7 +412,9 @@ public class ModConfig {
 		                        "minecraft:weakness",
 		                        "minecraft:wither",
 		                        "minecraft:hunger",
-		                        "minecraft:blindness"
+		                        "minecraft:blindness",
+                                "minecraft:levitation"
+
 		                ),
 		                entry -> entry instanceof String);
 
