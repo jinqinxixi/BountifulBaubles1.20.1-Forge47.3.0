@@ -1,5 +1,6 @@
 package com.jinqinxixi.bountifulbaubles.loot;
 
+import com.jinqinxixi.bountifulbaubles.config.ItemConfig;
 import com.jinqinxixi.bountifulbaubles.config.ModConfig;
 import com.jinqinxixi.bountifulbaubles.item.ModItems;
 import net.minecraft.resources.ResourceLocation;
@@ -42,6 +43,10 @@ public class LootHandler {
             for (ModConfig.LootEntry entry : entries) {
                 Item item = ForgeRegistries.ITEMS.getValue(entry.itemId);
                 if (item != null) {
+                    if (!ItemConfig.isEnabled(item)) {
+                        log.debug("已在配置中禁用，跳过战利品注入: {}", entry.itemId);
+                        continue;
+                    }
                     poolBuilder.add(LootItem.lootTableItem(item)
                                     .setWeight(entry.weight))
                             .setRolls(UniformGenerator.between(entry.minRolls, entry.maxRolls));
@@ -105,11 +110,17 @@ public class LootHandler {
     }
 
     private static void spawnItem(LivingEntity entity, Item item, int count, Level world) {
+        if (!ItemConfig.isEnabled(item)) {
+            return;
+        }
         ItemStack stack = new ItemStack(item, count);
         world.addFreshEntity(new ItemEntity(world, entity.getX(), entity.getY(), entity.getZ(), stack));
     }
 
     private static void handleDragonDrops(LivingEntity dragon, RandomSource rand, Level world) {
+        if (!ItemConfig.isEnabled(ModItems.ENDER_DRAGON_SCALE.get())) {
+            return;
+        }
         if (rand.nextFloat() < ModConfig.getDragonScaleChance()) {
             int count = ModConfig.getDragonScaleMin() + rand.nextInt(ModConfig.getDragonScaleMax() - ModConfig.getDragonScaleMin() + 1);
             for (int i = 0; i < count; i++) {

@@ -7,6 +7,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -68,13 +69,21 @@ public class InfiniteTotemOfUndyingItem extends ModifiableBaubleItem {
                 SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
         player.playSound(SoundEvents.TOTEM_USE, 1.0F, 1.0F);
 
-        // === 修改此处：移除旧粒子生成代码，改为发送网络包 ===
+        // === 发送网络包：粒子 + 脸上弹出的图腾动画 ===
         if (!world.isClientSide) {
             Vec3 pos = player.position();
             NetworkHandler.CHANNEL.send(
                     PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player),
                     new NetworkHandler.TotemParticlesPacket(pos.x, pos.y, pos.z)
             );
+
+            // 触发原版的"物品弹出"动画（只在触发者自己的客户端播放）
+            if (player instanceof ServerPlayer serverPlayer) {
+                NetworkHandler.CHANNEL.send(
+                        PacketDistributor.PLAYER.with(() -> serverPlayer),
+                        new NetworkHandler.TotemActivationPacket()
+                );
+            }
         }
     }
 

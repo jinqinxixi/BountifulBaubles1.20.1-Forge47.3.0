@@ -10,6 +10,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import com.electronwill.nightconfig.core.CommentedConfig;
+import com.electronwill.nightconfig.toml.TomlFormat;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 @Mod.EventBusSubscriber(modid = BountifulBaublesMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -34,6 +39,11 @@ public class ModConfig {
 
 
     // === 原有配置项 ===
+    // ===== 传送设置 =====
+    public static final ForgeConfigSpec.IntValue RECALL_MAX_DISTANCE;
+    public static final ForgeConfigSpec.BooleanValue RECALL_ALLOW_CROSS_DIMENSION;
+    public static final ForgeConfigSpec.IntValue PLAYER_TELEPORT_MAX_DISTANCE;
+    public static final ForgeConfigSpec.BooleanValue PLAYER_TELEPORT_ALLOW_CROSS_DIMENSION;
     public static final ForgeConfigSpec.IntValue ANVIL_RECAST_EXP_COST;
     public static final ForgeConfigSpec.IntValue ANVIL_RECAST_MATERIAL_COST;
     public static final ForgeConfigSpec.DoubleValue SPRINT_JUMP_VERTICAL;
@@ -65,7 +75,7 @@ public class ModConfig {
     public static final ForgeConfigSpec.IntValue MOSSY_BELT_REPAIR_AMOUNT;
     public static final ForgeConfigSpec.IntValue MAD_AURA_COOLDOWN;
     public static final ForgeConfigSpec.DoubleValue DARK_DAGGER_EXECUTE_THRESHOLD;
-    public static final ForgeConfigSpec.DoubleValue DARK_DAGGER_EXECUTE_DAMAGE;
+    public static final ForgeConfigSpec.DoubleValue DARK_DAGGER_EXECUTE_VOLUME;
     public static final ForgeConfigSpec.IntValue BLAZE_HEART_DURATION;
     public static final ForgeConfigSpec.IntValue WRATH_PENDANT_BUFF_DURATION;
     public static final ForgeConfigSpec.IntValue WRATH_PENDANT_BUFF_LEVEL;
@@ -492,13 +502,12 @@ public class ModConfig {
                 )
                 .defineInRange("executeThreshold", 0.20, 0.05, 0.50);
 
-        DARK_DAGGER_EXECUTE_DAMAGE = BUILDER
+        DARK_DAGGER_EXECUTE_VOLUME = BUILDER
                 .comment(
-                        "斩杀伤害值",
-                        "Execute damage amount"
+                        "斩杀音效音量（0.0 = 静音，1.0 = 原始音量）",
+                        "Execution sound volume (0.0 = mute, 1.0 = original volume)"
                 )
-                .defineInRange("executeDamage", 999999999.0, 1000.0, 999999999.0);
-
+                .defineInRange("executeVolume", 0.60, 0.0, 1.0);
         BUILDER.pop();
 
         BUILDER.push("Blaze Heart Settings")
@@ -680,6 +689,43 @@ public class ModConfig {
                                 "bountifulbaubles:glory_shards,10;" +
                                 "bountifulbaubles:ruby_heart,10;" +
                                 "bountifulbaubles:rock_candy,10");
+
+        BUILDER.pop();
+
+        // ===================== 传送设置 =====================
+        BUILDER.push("Teleport Settings")
+                .comment(
+                        "回城类物品（魔镜 / 虫洞镜 / 回忆药水 / 虫洞药水）与传送到玩家的相关限制",
+                        "Limits for recall-type items (Magic Mirror / Wormhole Mirror / Recall Potion / Wormhole Potion) and teleport-to-player"
+                );
+
+        RECALL_MAX_DISTANCE = BUILDER
+                .comment(
+                        "最大回城距离（格），按水平距离计算（忽略高度差）。0 = 不限制",
+                        "Max recall distance in blocks, measured horizontally (height ignored). 0 = unlimited"
+                )
+                .defineInRange("recall_max_distance", 0, 0, 30000000);
+
+        RECALL_ALLOW_CROSS_DIMENSION = BUILDER
+                .comment(
+                        "回城是否允许跨维度。关闭后只能在同一维度内回到重生点",
+                        "Whether recalling across dimensions is allowed"
+                )
+                .define("recall_allow_cross_dimension", true);
+
+        PLAYER_TELEPORT_MAX_DISTANCE = BUILDER
+                .comment(
+                        "传送到其他玩家的最大距离（格），按水平距离计算。0 = 不限制",
+                        "Max distance for teleporting to another player, measured horizontally. 0 = unlimited"
+                )
+                .defineInRange("player_teleport_max_distance", 0, 0, 30000000);
+
+        PLAYER_TELEPORT_ALLOW_CROSS_DIMENSION = BUILDER
+                .comment(
+                        "传送到其他玩家是否允许跨维度",
+                        "Whether teleporting to another player across dimensions is allowed"
+                )
+                .define("player_teleport_allow_cross_dimension", true);
 
         BUILDER.pop();
 
@@ -1025,6 +1071,23 @@ public class ModConfig {
         return EVOKER_TOTEM_CHANCE.get().floatValue();
     }
 
+    // ===================== 传送设置 getter =====================
+    public static int getRecallMaxDistance() {
+        return RECALL_MAX_DISTANCE.get();
+    }
+
+    public static boolean isRecallCrossDimensionAllowed() {
+        return RECALL_ALLOW_CROSS_DIMENSION.get();
+    }
+
+    public static int getPlayerTeleportMaxDistance() {
+        return PLAYER_TELEPORT_MAX_DISTANCE.get();
+    }
+
+    public static boolean isPlayerTeleportCrossDimensionAllowed() {
+        return PLAYER_TELEPORT_ALLOW_CROSS_DIMENSION.get();
+    }
+
     public static void loadLootConfig() {
         lootConfig.clear();
         LOOT_MAPPING.forEach((tableId, config) -> {
@@ -1196,9 +1259,10 @@ public class ModConfig {
         return DARK_DAGGER_EXECUTE_THRESHOLD.get();
     }
 
-    public static double getDarkDaggerExecuteDamage() {
-        return DARK_DAGGER_EXECUTE_DAMAGE.get();
+    public static float getDarkDaggerExecuteVolume() {
+        return DARK_DAGGER_EXECUTE_VOLUME.get().floatValue();
     }
+
     public static int getBlazeHeartDuration() {
         return BLAZE_HEART_DURATION.get();
     }
@@ -1212,11 +1276,42 @@ public class ModConfig {
     
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
-        for (String string: ANKH_DEBUFFS.get()) {
-        	MobEffect effect = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(string));
-        	if (effect != null) {
-        		ankh_debuffs.add(effect);
-        	}
+        rebuildAnkhDebuffs();
+    }
+
+    /** 重建安卡免疫列表：先清空再解析，避免每次配置加载都重复累加。 */
+    public static void rebuildAnkhDebuffs() {
+        ankh_debuffs.clear();
+        for (String string : ANKH_DEBUFFS.get()) {
+            MobEffect effect = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(string));
+            if (effect != null) {
+                ankh_debuffs.add(effect);
+            }
+        }
+    }
+
+    /** 服务端热重载主配置：重新解析 toml，并重建安卡列表与战利品表映射。 */
+    public static int reload(Path configDir) {
+        Path file = configDir.resolve("bountifulbaubles-common.toml");
+        if (!Files.exists(file)) {
+            // 文件被删了：把全部配置恢复为默认值并重建派生数据，
+            // 下次启动游戏时 Forge 会重新生成带注释的配置文件
+            SPEC.acceptConfig(CommentedConfig.inMemory());
+            rebuildAnkhDebuffs();
+            loadLootConfig();
+            return -2;
+        }
+        try
+        {
+            CommentedConfig parsed = TomlFormat.instance().createParser().parse(Files.readString(file));
+            SPEC.acceptConfig(parsed);
+            rebuildAnkhDebuffs();
+            loadLootConfig();
+            return LOOT_MAPPING.size();
+        }
+        catch (Exception e)
+        {
+            return -1;
         }
     }
 }

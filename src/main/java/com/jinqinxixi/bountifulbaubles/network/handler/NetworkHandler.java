@@ -74,6 +74,14 @@ public class NetworkHandler {
                 SpawnParticlesPacket::handle,
                 Optional.of(NetworkDirection.PLAY_TO_CLIENT)
         );
+
+        CHANNEL.registerMessage(packetId++,
+                TotemActivationPacket.class,
+                TotemActivationPacket::encode,
+                TotemActivationPacket::new,
+                TotemActivationPacket::handle,
+                Optional.of(NetworkDirection.PLAY_TO_CLIENT)
+        );
     }
 
     // ===== 无限图腾冷却包 =====
@@ -175,6 +183,42 @@ public class NetworkHandler {
                 if (ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
                     DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
                         ClientPacketHandler.spawnTotemParticles(packet.x, packet.y, packet.z);
+                    });
+                }
+            });
+            ctx.get().setPacketHandled(true);
+        }
+    }
+
+    // ===== "脸上弹出"物品动画包 =====
+    // 服务端在传送/触发效果成功后发给本人，客户端调用原版的
+    // GameRenderer#displayItemActivation 播放 swoop 动画（弹出指定物品）
+    public static class TotemActivationPacket {
+
+        /** 要弹出的物品注册名；空字符串表示按不死图腾护符处理。 */
+        private final String itemId;
+
+        public TotemActivationPacket() {
+            this("");
+        }
+
+        public TotemActivationPacket(String itemId) {
+            this.itemId = itemId == null ? "" : itemId;
+        }
+
+        public TotemActivationPacket(FriendlyByteBuf buf) {
+            this.itemId = buf.readUtf();
+        }
+
+        public void encode(FriendlyByteBuf buf) {
+            buf.writeUtf(itemId);
+        }
+
+        public static void handle(TotemActivationPacket packet, Supplier<NetworkEvent.Context> ctx) {
+            ctx.get().enqueueWork(() -> {
+                if (ctx.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT) {
+                    DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+                        ClientPacketHandler.displayItemActivation(packet.itemId);
                     });
                 }
             });

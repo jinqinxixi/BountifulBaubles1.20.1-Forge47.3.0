@@ -1,11 +1,13 @@
 package com.jinqinxixi.bountifulbaubles.system.wormhole;
 
+import com.jinqinxixi.bountifulbaubles.config.ItemConfig;
 import com.jinqinxixi.bountifulbaubles.item.Baubles.WormholeMirrorItem;
 import com.jinqinxixi.bountifulbaubles.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import com.jinqinxixi.bountifulbaubles.util.TeleportGuard;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -17,7 +19,9 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class PacketHandler {
@@ -63,6 +67,15 @@ public class PacketHandler {
                 (msg, ctx) -> {
                     if (ctx.get().getDirection().getReceptionSide().isClient()) {
                         handleClientPacket(ctx, () -> SetCooldownPacket.handleClient(msg, ctx.get()));
+                    }
+                });
+
+        // 饰品开关同步（服务端 -> 客户端）
+        INSTANCE.registerMessage(packetId++, SyncItemConfigPacket.class,
+                SyncItemConfigPacket::encode, SyncItemConfigPacket::decode,
+                (msg, ctx) -> {
+                    if (ctx.get().getDirection().getReceptionSide().isClient()) {
+                        handleClientPacket(ctx, () -> SyncItemConfigPacket.handleClient(msg, ctx.get()));
                     }
                 });
     }
@@ -288,6 +301,12 @@ public class PacketHandler {
             ServerPlayer target = ctx.getSender().server.getPlayerList().getPlayerByName(msg.targetName);
 
             if (msg.accepted && requester != null && target != null) {
+                // 传送限制检查（最大距离 / 是否允许跨维度）
+                Component deny = TeleportGuard.checkPlayerTeleport(requester, target);
+                if (deny != null) {
+                    requester.sendSystemMessage(deny);
+                    return;
+                }
                 requester.teleportTo(
                         target.serverLevel(),
                         target.getX(),
@@ -323,6 +342,30 @@ public class PacketHandler {
             if (player != null) {
                 player.getCooldowns().addCooldown(ModItems.WORMHOLE_MIRROR.get(), msg.ticks);
             }
+        }
+    }
+
+    //------------------ 饰品开关同步包（服务端 -> 客户端）------------------
+    public static class SyncItemConfigPacket {
+        private final Map<String, Boolean> state;
+
+        public SyncItemConfigPacket(Map<String, Boolean> state) {
+            this.state = state;
+        }
+
+        public static void encode(SyncItemConfigPacket msg, FriendlyByteBuf buffer) {
+            buffer.writeMap(msg.state, FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeBoolean);
+        }
+
+        public static SyncItemConfigPacket decode(FriendlyByteBuf buffer) {
+            return new SyncItemConfigPacket(
+                    buffer.readMap(HashMap::new, FriendlyByteBuf::readUtf, FriendlyByteBuf::readBoolean));
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        public static void handleClient(SyncItemConfigPacket msg, NetworkEvent.Context ctx) {
+            // 以服务端状态为准，覆盖本地配置，保证 tooltip 与服务器一致
+            ItemConfig.applyServerState(msg.state);
         }
     }
 }

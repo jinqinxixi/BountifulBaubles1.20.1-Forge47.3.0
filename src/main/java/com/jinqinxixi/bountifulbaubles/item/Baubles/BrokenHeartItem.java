@@ -18,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -127,7 +127,7 @@ public class BrokenHeartItem extends ModifiableBaubleItem {
     }
 
     @SubscribeEvent
-    public static void onLivingHurt(LivingHurtEvent event) {
+    public static void onLivingDamage(LivingDamageEvent event) {
         // 使用ModList检查而不是类加载检查
         if (ModList.get().isLoaded("firstaid")) return;
 
@@ -140,7 +140,7 @@ public class BrokenHeartItem extends ModifiableBaubleItem {
     }
 
 
-    private static void handleDamageProtection(Player player, LivingHurtEvent event) {
+    private static void handleDamageProtection(Player player, LivingDamageEvent event) {
         float effectiveHealth = player.getHealth() + player.getAbsorptionAmount();
         float damageAmount = event.getAmount();
 

@@ -4,8 +4,10 @@ package com.jinqinxixi.bountifulbaubles.item.Baubles;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import com.jinqinxixi.bountifulbaubles.util.TeleportGuard;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -20,6 +22,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.network.PacketDistributor;
+import com.jinqinxixi.bountifulbaubles.network.handler.NetworkHandler;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
@@ -42,7 +46,7 @@ public class MagicMirrorItem extends Item {
     // 定义使用动作为拉弓
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+        return UseAnim.NONE;   // 还原 1.12 原版：EnumAction.NONE，无手臂动画
     }
 
     // 右键开始使用
@@ -102,6 +106,13 @@ public class MagicMirrorItem extends Item {
             spawnPos = targetLevel.getSharedSpawnPos();
         }
 
+        // 传送限制检查（最大距离 / 是否允许跨维度）
+        Component deny = TeleportGuard.checkRecall(player, targetLevel, spawnPos);
+        if (deny != null) {
+            player.displayClientMessage(deny, true);
+            return;
+        }
+
         player.teleportTo(targetLevel,
                 spawnPos.getX() + 0.5,
                 spawnPos.getY(),
@@ -112,6 +123,24 @@ public class MagicMirrorItem extends Item {
         // 调用效果方法
         player.fallDistance = 0;
         playTeleportEffects(player);
+
+        // 传送成功：通知本人播放"脸上弹出"动画（药水等子类可覆盖为 false）
+        if (shouldShowActivationAnimation()) {
+            NetworkHandler.CHANNEL.send(
+                    PacketDistributor.PLAYER.with(() -> player),
+                    new NetworkHandler.TotemActivationPacket(
+                            BuiltInRegistries.ITEM.getKey(this).toString())
+            );
+        }
+    }
+
+    /**
+     * 传送后是否播放"脸上弹出"动画。
+     * <p>
+     * 默认 true（魔镜、虫洞镜）；继承本类的药水等变体可覆盖为 false。
+     */
+    protected boolean shouldShowActivationAnimation() {
+        return true;
     }
 
     protected void setCooldown(Player player) {

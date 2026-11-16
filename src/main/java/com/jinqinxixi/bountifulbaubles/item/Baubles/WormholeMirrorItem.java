@@ -1,13 +1,16 @@
 package com.jinqinxixi.bountifulbaubles.item.Baubles;
 
+import com.jinqinxixi.bountifulbaubles.network.handler.NetworkHandler;
 import com.jinqinxixi.bountifulbaubles.system.wormhole.PacketHandler;
 import com.jinqinxixi.bountifulbaubles.system.wormhole.TeleportRequestManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import com.jinqinxixi.bountifulbaubles.util.TeleportGuard;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -49,7 +52,7 @@ public class WormholeMirrorItem extends Item {
 
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.BOW;
+        return UseAnim.NONE;   // 还原 1.12 原版：EnumAction.NONE，无手臂动画
     }
 
     @Override
@@ -79,23 +82,23 @@ public class WormholeMirrorItem extends Item {
 
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-        if (entity instanceof Player player) {
-            if (player.isShiftKeyDown()) {
-                if (level.isClientSide) {
-                    openPlayerListGUI(player);
-                }
-            } else {
-                if (checkCooldown(player)) {
-                    teleportToSpawn((ServerPlayer) player);
-                    setCooldown(player);
-                }
+        if (entity.isShiftKeyDown()) {
+            // 潜行使用：请求包已由 use() 发出，这里只在客户端补开界面
+            if (level.isClientSide) {
+                openPlayerListGUI(entity);
+            }
+        } else if (entity instanceof ServerPlayer player) {
+            // 普通使用：仅服务端处理传送，客户端 LocalPlayer 不能强转
+            if (checkCooldown(player)) {
+                teleportToSpawn(player);
+                setCooldown(player);
             }
         }
         return stack;
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void openPlayerListGUI(Player player) {
+    private void openPlayerListGUI(LivingEntity entity) {
         PacketHandler.INSTANCE.sendToServer(new PacketHandler.RequestPlayerListPacket(false));
     }
 
@@ -198,6 +201,13 @@ public class WormholeMirrorItem extends Item {
             spawnPos = targetLevel.getSharedSpawnPos();
         }
 
+        // 传送限制检查（最大距离 / 是否允许跨维度）
+        Component deny = TeleportGuard.checkRecall(player, targetLevel, spawnPos);
+        if (deny != null) {
+            player.displayClientMessage(deny, true);
+            return;
+        }
+
         player.teleportTo(targetLevel,
                 spawnPos.getX() + 0.5,
                 spawnPos.getY(),
@@ -206,6 +216,24 @@ public class WormholeMirrorItem extends Item {
                 0);
         player.fallDistance = 0;
         playTeleportEffects(player);
+
+        // 传送成功：通知本人播放"脸上弹出"动画（走主通道，包注册在 NetworkHandler.CHANNEL）
+        if (shouldShowActivationAnimation()) {
+            NetworkHandler.CHANNEL.send(
+                    PacketDistributor.PLAYER.with(() -> player),
+                    new NetworkHandler.TotemActivationPacket(
+                            BuiltInRegistries.ITEM.getKey(this).toString())
+            );
+        }
+    }
+
+    /**
+     * 传送后是否播放"脸上弹出"动画。
+     * <p>
+     * 默认 true（虫洞镜）；继承本类的药水等变体可覆盖为 false。
+     */
+    protected boolean shouldShowActivationAnimation() {
+        return true;
     }
 
     // 设置冷却并发送同步包

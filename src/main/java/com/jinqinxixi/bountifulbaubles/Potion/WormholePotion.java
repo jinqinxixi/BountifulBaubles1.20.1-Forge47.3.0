@@ -74,6 +74,11 @@ public class WormholePotion extends WormholeMirrorItem {
     }
 
     @Override
+    protected boolean shouldShowActivationAnimation() {
+        return false;   // 药水不播放"脸上弹出"动画（仅镜子有）
+    }
+
+    @Override
     protected ItemStack handleItemConsumption(ItemStack stack, ServerPlayer player) {
         if (!player.getAbilities().instabuild) {
             ItemStack bottleStack = new ItemStack(Items.GLASS_BOTTLE);

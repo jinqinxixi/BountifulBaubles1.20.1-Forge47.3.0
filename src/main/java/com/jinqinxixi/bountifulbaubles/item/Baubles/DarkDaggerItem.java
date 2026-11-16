@@ -54,9 +54,11 @@ public class DarkDaggerItem extends ModifiableBaubleItem {
                 // 计算目标当前生命值百分比
                 double healthPercentage = target.getHealth() / target.getMaxHealth();
 
-                // 使用配置的阈值和伤害值
+                // 使用配置的阈值
                 if (healthPercentage <= ModConfig.getDarkDaggerExecuteThreshold()) {
-                    event.setAmount((float)ModConfig.getDarkDaggerExecuteDamage());
+                    // 直接秒杀（无视所有减伤）
+                    target.setHealth(0);
+                    event.setCanceled(true);
                     // 使用优化后的特效
                     playOptimizedExecuteEffects(player, target);
                 }
@@ -110,7 +112,7 @@ public class DarkDaggerItem extends ModifiableBaubleItem {
                 target.getZ(),
                 ModSounds.DARK_DAGGER_EXECUTE.get(),
                 SoundSource.PLAYERS,
-                1.0F,
+                ModConfig.getDarkDaggerExecuteVolume(),
                 1.0F);
     }
 

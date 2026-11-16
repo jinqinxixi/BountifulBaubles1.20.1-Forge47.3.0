@@ -66,6 +66,11 @@ public class RecallPotion extends MagicMirrorItem {
         return ItemStack.EMPTY; // 堆叠为1时直接消耗
     }
 
+    @Override
+    protected boolean shouldShowActivationAnimation() {
+        return false;   // 药水不播放"脸上弹出"动画（仅镜子有）
+    }
+
     protected void setCooldown(Player player) {
         player.getCooldowns().addCooldown(this, COOLDOWN_TICKS);
     }

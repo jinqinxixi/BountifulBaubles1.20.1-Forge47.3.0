@@ -23,3 +23,7 @@ run
 
 # Files from Forge MDK
 forge*changelog.txt
+
+# 本地备份目录（不提交）
+_backup_*/
+CON

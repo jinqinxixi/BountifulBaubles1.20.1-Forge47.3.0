@@ -1,6 +1,7 @@
 package com.jinqinxixi.bountifulbaubles;
 
 
+import com.jinqinxixi.bountifulbaubles.config.ItemConfig;
 import com.jinqinxixi.bountifulbaubles.config.ModConfig;
 import com.jinqinxixi.bountifulbaubles.sound.ModSounds;
 import com.jinqinxixi.bountifulbaubles.loot.LootHandler;
@@ -34,6 +35,8 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
@@ -77,7 +80,6 @@ public class BountifulBaublesMod {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onGatherData);
         modEventBus.addListener(this::onCommonSetup);
-        PacketHandler.register();
         // 注册子系统
         ModSounds.SOUND_EVENTS.register(modEventBus);
         ModItems.register(modEventBus);
@@ -100,6 +102,13 @@ public class BountifulBaublesMod {
                 Type.COMMON,
                 ModConfig.SPEC,
                 "bountifulbaubles-common.toml"
+        );
+
+        // 饰品开关配置（独立文件，每个饰品一个 enable_<id> 开关）
+        ModLoadingContext.get().registerConfig(
+                Type.COMMON,
+                ItemConfig.SPEC,
+                "bountifulbaubles-items.toml"
         );
 
         // 服务器启动事件
@@ -190,6 +199,13 @@ public class BountifulBaublesMod {
                 );
                 ((WormholeMirrorItem) ModItems.WORMHOLE_MIRROR.get()).playTeleportEffects(request.requester);
                 sendTeleportMessages(request.requester, responder, true);
+
+                // 传送成功：通知发起者在客户端播放"脸上弹出"动画
+                NetworkHandler.CHANNEL.send(
+                        PacketDistributor.PLAYER.with(() -> request.requester),
+                        new NetworkHandler.TotemActivationPacket(
+                                BuiltInRegistries.ITEM.getKey(ModItems.WORMHOLE_MIRROR.get()).toString())
+                );
             } else {
                 sendTeleportMessages(request.requester, responder, false);
             }
@@ -231,6 +247,11 @@ public class BountifulBaublesMod {
                 ItemProperties.register(ModItems.COBALT_SHIELD.get(), new ResourceLocation("blocking"), blockFn);
                 ItemProperties.register(ModItems.OBSIDIAN_SHIELD.get(), new ResourceLocation("blocking"), blockFn);
                 ItemProperties.register(ModItems.ANKH_SHIELD.get(), new ResourceLocation("blocking"), blockFn);
+
+                // 虫洞镜长按时切换到"举起"模型（wormhole_mirror_using），还原 1.12 的 using 属性
+                ItemProperties.register(ModItems.WORMHOLE_MIRROR.get(), new ResourceLocation("using"), blockFn);
+                // 魔镜同理（magic_mirror_using）
+                ItemProperties.register(ModItems.MAGIC_MIRROR.get(), new ResourceLocation("using"), blockFn);
 
                 LOGGER.info("[Bountiful Baubles] Client setup completed");
             });
