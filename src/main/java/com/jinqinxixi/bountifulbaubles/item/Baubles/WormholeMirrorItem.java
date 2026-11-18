@@ -5,6 +5,7 @@ import com.jinqinxixi.bountifulbaubles.system.wormhole.PacketHandler;
 import com.jinqinxixi.bountifulbaubles.system.wormhole.TeleportRequestManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -26,12 +27,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurio;
+
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -81,6 +85,15 @@ public class WormholeMirrorItem extends Item {
     }
 
     @Override
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingTicks) {
+        if (level.isClientSide) return;
+        if (entity instanceof ServerPlayer player) {
+            float progress = 1.0f - (remainingTicks / (float) USE_DURATION);
+            spawnProgressParticles(player, progress); // 长按蓄力粒子
+        }
+    }
+
+    @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
         if (entity.isShiftKeyDown()) {
             // 潜行使用：请求包已由 use() 发出，这里只在客户端补开界面
@@ -90,6 +103,7 @@ public class WormholeMirrorItem extends Item {
         } else if (entity instanceof ServerPlayer player) {
             // 普通使用：仅服务端处理传送，客户端 LocalPlayer 不能强转
             if (checkCooldown(player)) {
+                spawnCompletionParticles(player); // 完成粒子（原位置散开）
                 teleportToSpawn(player);
                 setCooldown(player);
             }
@@ -181,13 +195,42 @@ public class WormholeMirrorItem extends Item {
         return true;
     }
 
+    private void spawnProgressParticles(ServerPlayer player, float progress) {
+        ServerLevel serverLevel = (ServerLevel) player.level();
+        Vec3 lookVec = player.getLookAngle().scale(0.5);
+        Vec3 pos = player.position()
+                .add(0, player.getEyeHeight() - 0.2, 0)
+                .add(lookVec);
+
+        serverLevel.sendParticles(
+                new DustParticleOptions(new Vector3f(0.9f, 0.1f, 1f), 0.5f),
+                pos.x, pos.y, pos.z,
+                20,                    // 粒子数量（同步魔镜）
+                0.5, 0.5, 0.5,         // 随机偏移量（同步魔镜）
+                0                      // 基础速度
+        );
+    }
+
+    protected void spawnCompletionParticles(ServerPlayer player) {
+        ServerLevel serverLevel = (ServerLevel) player.level();
+        Vec3 pos = player.position().add(0, player.getBbHeight() / 2, 0);
+
+        serverLevel.sendParticles(
+                ParticleTypes.REVERSE_PORTAL,
+                pos.x, pos.y, pos.z,
+                300,                    // 粒子数量
+                1.0, 1.0, 1.0,          // 扩散范围
+                0.3                     // 速度
+        );
+    }
+
     // 播放传送粒子效果和音效
     public void playTeleportEffects(ServerPlayer player) {
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
         ((ServerLevel) player.level()).sendParticles(ParticleTypes.PORTAL,
                 player.getX(), player.getY(), player.getZ(),
-                100, 0.5, 0.5, 0.5, 1.0);
+                500, 0.5, 0.5, 0.5, 1.0);
     }
 
     // 传送至重生点逻辑
@@ -275,6 +318,12 @@ public class WormholeMirrorItem extends Item {
                 .withStyle(ChatFormatting.BLUE));
         tooltip.add(Component.translatable("tooltip.bountifulbaubles.wormhole_mirror.description")
                 .withStyle(ChatFormatting.GREEN));
+    }
+
+    // 始终显示附魔光效
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return true;
     }
 
 }

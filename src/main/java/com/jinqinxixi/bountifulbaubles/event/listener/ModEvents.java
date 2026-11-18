@@ -66,27 +66,6 @@ public class ModEvents {
         }
     }
 
-    // ==================== 镜子蓄力粒子（还原 1.12 的 onUsingTick）====================
-    // 1.20 没有 Item#onUsingTick，改用 Forge 的 UseItem Tick 事件。
-    // 注意：ClientPacketHandler 是 @OnlyIn(CLIENT)，必须用 DistExecutor 隔离，
-    // 否则服务端加载本类时会因解析到客户端类而 NoClassDefFoundError。
-    @SubscribeEvent
-    public static void onItemUseTick(LivingEntityUseItemEvent.Tick event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (!player.level().isClientSide) return;
-
-        ItemStack stack = event.getItem();
-        if (!(stack.getItem() instanceof MagicMirrorItem)
-                && !(stack.getItem() instanceof WormholeMirrorItem)) {
-            return;
-        }
-
-        // getDuration() 是剩余时长，换算成本次已使用的 tick 数
-        int usedTicks = stack.getUseDuration() - event.getDuration();
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-                () -> () -> ClientPacketHandler.spawnMirrorChargeParticles(usedTicks));
-    }
-
     // ==================== 击退免疫系统 ====================
     @SubscribeEvent
     public static void onLivingKnockBack(LivingKnockBackEvent event) {

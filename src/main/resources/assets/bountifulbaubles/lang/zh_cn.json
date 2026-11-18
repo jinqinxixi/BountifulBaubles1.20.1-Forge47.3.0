@@ -221,5 +221,6 @@
   "tooltip.bountifulbaubles.rock_candy.damage_warning": "▸ 受到的伤害变为%s倍！",
   "tooltip.bountifulbaubles.disabled": "已禁用（服务器未启用该饰品）",
   "msg.bountifulbaubles.teleport.too_far": "传送失败：距离过远（%s 格，上限 %s 格）",
-  "msg.bountifulbaubles.teleport.cross_dimension_denied": "传送失败：无法跨维度传送"
+  "msg.bountifulbaubles.teleport.cross_dimension_denied": "传送失败：无法跨维度传送",
+  "tooltip.bountifulbaubles.rock_candy.no_stack": "▸ 该效果不可叠加"
 }

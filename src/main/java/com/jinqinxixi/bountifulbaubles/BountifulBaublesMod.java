@@ -19,6 +19,10 @@ import com.jinqinxixi.bountifulbaubles.item.Baubles.BottledCloudItem;
 import com.jinqinxixi.bountifulbaubles.item.Baubles.WormholeMirrorItem;
 import com.jinqinxixi.bountifulbaubles.item.ModCreativeModeTab;
 import com.jinqinxixi.bountifulbaubles.item.ModItems;
+import com.jinqinxixi.bountifulbaubles.client.particle.SkyBluePortalParticle;
+import com.jinqinxixi.bountifulbaubles.client.particle.SkyBlueReversePortalParticle;
+import com.jinqinxixi.bountifulbaubles.client.particle.SkyBlueDustParticle;
+import com.jinqinxixi.bountifulbaubles.particle.ModParticles;
 import com.jinqinxixi.bountifulbaubles.compat.firstaid.BrokenHeartFirstAidCompat;
 import com.jinqinxixi.bountifulbaubles.compat.firstaid.PhylacteryCharmFirstAidCompat;
 import com.jinqinxixi.bountifulbaubles.network.handler.NetworkHandler;
@@ -40,6 +44,7 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -82,6 +87,7 @@ public class BountifulBaublesMod {
         modEventBus.addListener(this::onCommonSetup);
         // 注册子系统
         ModSounds.SOUND_EVENTS.register(modEventBus);
+        ModParticles.PARTICLE_TYPES.register(modEventBus);
         ModItems.register(modEventBus);
         ModCreativeModeTab.register(modEventBus);
         ModEffects.EFFECTS.register(modEventBus);
@@ -255,6 +261,13 @@ public class BountifulBaublesMod {
 
                 LOGGER.info("[Bountiful Baubles] Client setup completed");
             });
+        }
+
+        @SubscribeEvent
+        public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
+            event.registerSpriteSet(ModParticles.SKY_BLUE_PORTAL.get(), SkyBluePortalParticle.Provider::new);
+            event.registerSpriteSet(ModParticles.SKY_BLUE_REVERSE_PORTAL.get(), SkyBlueReversePortalParticle.Provider::new);
+            event.registerSpriteSet(ModParticles.SKY_BLUE_DUST.get(), SkyBlueDustParticle.Provider::new);
         }
     }
     // 空方法保留结构

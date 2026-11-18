@@ -45,6 +45,7 @@ public class RecallPotion extends MagicMirrorItem {
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
         if (entity instanceof ServerPlayer player) {
             if (checkCooldown(player)) {
+                spawnCompletionParticles(player); // 完成粒子（原位置散开）
                 teleportToSpawn(player);
                 setCooldown(player);
             }

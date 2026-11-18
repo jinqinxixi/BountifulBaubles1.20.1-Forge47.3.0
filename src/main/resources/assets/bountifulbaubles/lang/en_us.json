@@ -221,5 +221,6 @@
   "tooltip.bountifulbaubles.rock_candy.damage_warning": "▸ Takes %sx more damage!",
   "tooltip.bountifulbaubles.disabled": "Disabled (this item is turned off by the server)",
   "msg.bountifulbaubles.teleport.too_far": "Teleport failed: too far (%s blocks, limit %s)",
-  "msg.bountifulbaubles.teleport.cross_dimension_denied": "Teleport failed: cross-dimension teleport is disabled"
+  "msg.bountifulbaubles.teleport.cross_dimension_denied": "Teleport failed: cross-dimension teleport is disabled",
+  "tooltip.bountifulbaubles.rock_candy.no_stack": "▸ Effect does not stack"
 }

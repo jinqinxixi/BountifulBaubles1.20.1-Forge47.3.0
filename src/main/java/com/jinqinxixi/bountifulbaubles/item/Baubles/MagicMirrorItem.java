@@ -3,10 +3,10 @@ package com.jinqinxixi.bountifulbaubles.item.Baubles;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import com.jinqinxixi.bountifulbaubles.particle.ModParticles;
 import com.jinqinxixi.bountifulbaubles.util.TeleportGuard;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.network.PacketDistributor;
 import com.jinqinxixi.bountifulbaubles.network.handler.NetworkHandler;
@@ -61,9 +62,19 @@ public class MagicMirrorItem extends Item {
     }
 
     @Override
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingTicks) {
+        if (level.isClientSide) return;
+        if (entity instanceof ServerPlayer player) {
+            float progress = 1.0f - (remainingTicks / (float) USE_DURATION);
+            spawnChargeParticles(player, progress); // 长按蓄力粒子
+        }
+    }
+
+    @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
         if (entity instanceof ServerPlayer player) {
             if (checkCooldown(player)) {
+                spawnCompletionParticles(player); // 完成粒子（原位置散开）
                 teleportToSpawn(player); // 核心逻辑
                 setCooldown(player);
             }
@@ -87,13 +98,42 @@ public class MagicMirrorItem extends Item {
         }
         return true;
     }
+    private void spawnChargeParticles(ServerPlayer player, float progress) {
+        ServerLevel serverLevel = (ServerLevel) player.level();
+        Vec3 lookVec = player.getLookAngle().scale(0.5);
+        Vec3 pos = player.position()
+                .add(0, player.getEyeHeight() - 0.2, 0)
+                .add(lookVec);
+
+        serverLevel.sendParticles(
+                ModParticles.SKY_BLUE_DUST.get(),
+                pos.x, pos.y, pos.z,
+                20,                    // 每 tick 生成 20 个粒子
+                0.5, 0.5, 0.5,         // 随机偏移量
+                0                      // 基础速度
+        );
+    }
+
+    protected void spawnCompletionParticles(ServerPlayer player) {
+        ServerLevel serverLevel = (ServerLevel) player.level();
+        Vec3 pos = player.position().add(0, player.getBbHeight() / 2, 0);
+
+        serverLevel.sendParticles(
+                ModParticles.SKY_BLUE_REVERSE_PORTAL.get(),
+                pos.x, pos.y, pos.z,
+                300,                    // 粒子数量
+                1.0, 1.0, 1.0,          // 扩散范围
+                0.3                     // 速度
+        );
+    }
+
     // 新增公共方法：播放传送效果（被子类复用）
     public void playTeleportEffects(ServerPlayer player) {
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-        ((ServerLevel) player.level()).sendParticles(ParticleTypes.PORTAL,
+        ((ServerLevel) player.level()).sendParticles(ModParticles.SKY_BLUE_PORTAL.get(),
                 player.getX(), player.getY(), player.getZ(),
-                100, 0.5, 0.5, 0.5, 1.0);
+                500, 0.5, 0.5, 0.5, 1.0);
     }
 
     protected void teleportToSpawn(ServerPlayer player) {
@@ -176,5 +216,11 @@ public class MagicMirrorItem extends Item {
     @Override
     public boolean isEnchantable(ItemStack stack) {
         return false;
+    }
+
+    // 始终显示附魔光效
+    @Override
+    public boolean isFoil(ItemStack stack) {
+        return true;
     }
 }
